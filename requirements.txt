@@ -1,2 +1,6 @@
 djangorestframework
 psycopg2
+flake8
+mypy
+black
+isort
