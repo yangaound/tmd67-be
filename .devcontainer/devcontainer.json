@@ -31,7 +31,8 @@
 				"donjayamanne.python-extension-pack",
 				"ms-python.vscode-pylance",
 				"mtxr.sqltools-driver-pg",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"dineug.vuerd-vscode"
 			]
 		}
 	},

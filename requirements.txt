@@ -1,6 +1,10 @@
-djangorestframework
+drf-spectacular[sidecar]
 psycopg2
+mysqlclient
 flake8
 mypy
 black
 isort
+pre-commit
+commitizen
+mkdocstrings[python]
