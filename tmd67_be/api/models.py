@@ -23,7 +23,7 @@ class Member(models.Model):
 
 
 class Club(models.Model):
-    agency = models.ForeignKey(Agency, models.DO_NOTHING)
+    agency = models.ForeignKey(Agency, models.CASCADE)
     club_number = models.IntegerField()
     chinese_name = models.CharField(max_length=100)
     english_name = models.CharField(max_length=100)
@@ -51,7 +51,7 @@ class Club(models.Model):
 class Event(models.Model):
     tw_title = models.CharField(max_length=250)
     en_title = models.CharField(max_length=250, blank=True, null=True)
-    member = models.ForeignKey(Member, models.DO_NOTHING)
+    member = models.ForeignKey(Member, models.CASCADE)
     contents = models.TextField(blank=True, null=True)
     agenda = models.TextField(blank=True, null=True)
     countdown = models.DateField()
@@ -72,16 +72,38 @@ class Event(models.Model):
 
 
 class Attachment(models.Model):
-    event = models.ForeignKey(Event, models.DO_NOTHING)
+    event = models.ForeignKey(Event, models.CASCADE)
     name = models.CharField(max_length=255)
     attachment = models.CharField(max_length=255)
 
 
 class Office(models.Model):
-    member = models.ForeignKey(Member, models.DO_NOTHING)
-    agency = models.ForeignKey(Agency, models.DO_NOTHING)
-    club = models.ForeignKey(Club, models.DO_NOTHING, blank=True, null=True)
-    role = models.ForeignKey(Role, models.DO_NOTHING)
+    member = models.ForeignKey(Member, models.CASCADE)
+    agency = models.ForeignKey(Agency, models.CASCADE)
+    club = models.ForeignKey(Club, models.CASCADE, blank=True, null=True)
+    role = models.ForeignKey(Role, models.CASCADE)
     print = models.IntegerField(blank=True, null=True)
     batch = models.IntegerField(blank=True, null=True)
     confirm = models.IntegerField(blank=True, null=True)
+
+
+class Path(models.Model):
+    en_name = models.CharField(max_length=255)
+    tw_name = models.CharField(max_length=255)
+    en_description = models.TextField()
+    tw_description = models.TextField()
+
+
+class Project(models.Model):
+    path = models.ForeignKey(Path, models.CASCADE)
+    level = models.IntegerField()
+    en_name = models.CharField(max_length=255)
+    tw_name = models.CharField(max_length=255)
+    en_description = models.TextField()
+    tw_description = models.TextField()
+    en_purpose = models.TextField()
+    tw_purpose = models.TextField()
+    en_overview = models.TextField()
+    tw_overview = models.TextField()
+    includes = models.JSONField()
+    evaluation_form = models.URLField()
