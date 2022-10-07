@@ -97,6 +97,7 @@ class Path(models.Model):
 class Project(models.Model):
     path = models.ForeignKey(Path, models.CASCADE)
     level = models.IntegerField()
+    is_elective = models.BooleanField()
     en_name = models.CharField(max_length=255)
     tw_name = models.CharField(max_length=255)
     en_description = models.TextField()
