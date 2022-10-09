@@ -1,6 +1,7 @@
 drf-spectacular[sidecar]
-psycopg2
+psycopg2-binary
 flake8
 mypy
 black
 isort
+django_filter
