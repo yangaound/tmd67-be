@@ -90,6 +90,7 @@ class Office(models.Model):
 class Path(models.Model):
     en_name = models.CharField(max_length=255)
     tw_name = models.CharField(max_length=255)
+    initialism = models.CharField(max_length=2)
     en_description = models.TextField()
     tw_description = models.TextField()
 
