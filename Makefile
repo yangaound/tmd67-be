@@ -1,6 +1,7 @@
 format:
-	black .
+	autoflake -ir --remove-all-unused-imports .
 	isort .
+	black .
 
 lint:
 	flake8

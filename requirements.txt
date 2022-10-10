@@ -2,7 +2,8 @@ drf-spectacular[sidecar]
 psycopg2-binary
 flake8
 mypy
+autoflake
 black
-isort
+isort[requirements_deprecated_finder]
 django_filter
 strawberry-django-plus
