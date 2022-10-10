@@ -95,11 +95,11 @@ class Path(models.Model):
     tw_description = models.TextField()
 
     def __str__(self):
-        return f'Path(id={self.id}, en_name={self.en_name}'
+        return f"Path(id={self.id}, en_name={self.en_name}"
 
 
 class Project(models.Model):
-    path = models.ForeignKey(Path, models.CASCADE)
+    path = models.ForeignKey(Path, models.CASCADE, related_name="projects")
     level = models.IntegerField()
     is_elective = models.BooleanField()
     en_name = models.CharField(max_length=255)
