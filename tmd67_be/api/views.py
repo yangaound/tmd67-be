@@ -1,9 +1,13 @@
 from django.contrib.auth.models import Group, User
-from rest_framework import generics, mixins, permissions, viewsets
+from rest_framework import mixins, permissions, viewsets
 
 from tmd67_be.api.models import Path, Project
-from tmd67_be.api.serializers import (GroupSerializer, PathSerializer,
-                                      ProjectSerializer, UserSerializer)
+from tmd67_be.api.serializers import (
+    GroupSerializer,
+    PathSerializer,
+    ProjectSerializer,
+    UserSerializer,
+)
 
 
 class UserViewSet(viewsets.ModelViewSet):
