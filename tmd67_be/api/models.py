@@ -94,6 +94,9 @@ class Path(models.Model):
     en_description = models.TextField()
     tw_description = models.TextField()
 
+    def __str__(self):
+        return f'Path(id={self.id}, en_name={self.en_name}'
+
 
 class Project(models.Model):
     path = models.ForeignKey(Path, models.CASCADE)
