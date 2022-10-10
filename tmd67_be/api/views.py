@@ -1,8 +1,9 @@
 from django.contrib.auth.models import Group, User
-from rest_framework import permissions, viewsets, mixins, generics
+from rest_framework import generics, mixins, permissions, viewsets
 
 from tmd67_be.api.models import Path, Project
-from tmd67_be.api.serializers import GroupSerializer, UserSerializer, PathSerializer, ProjectSerializer
+from tmd67_be.api.serializers import (GroupSerializer, PathSerializer,
+                                      ProjectSerializer, UserSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -26,12 +27,16 @@ class GroupViewSet(viewsets.ModelViewSet):
 
 
 class ListPathView(viewsets.GenericViewSet, mixins.ListModelMixin):
-    filterset_fields = ('tw_name', 'en_name', 'initialism', )
+    filterset_fields = (
+        "tw_name",
+        "en_name",
+        "initialism",
+    )
     queryset = Path.objects.all()
     serializer_class = PathSerializer
 
 
 class ListProjectView(viewsets.GenericViewSet, mixins.ListModelMixin):
-    filterset_fields = ('path', 'level',  'is_elective', 'en_name', 'tw_name')
+    filterset_fields = ("path", "level", "is_elective", "en_name", "tw_name")
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
