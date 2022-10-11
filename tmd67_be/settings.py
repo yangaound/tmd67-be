@@ -40,8 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "tmd67_be.api",
     "django_filters",
+    "tmd67_be.api",
 ]
 
 MIDDLEWARE = [
@@ -124,8 +124,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = "/api-v1-static/"
-STATIC_ROOT = "/tmd67-api-assets/static/"
+STATIC_URL = "static/"
+STATIC_ROOT = "static"
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 

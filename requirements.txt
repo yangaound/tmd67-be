@@ -1,9 +1,10 @@
-drf-spectacular[sidecar]
+djangorestframework
+django_filter
+strawberry-django-plus
+uwsgi
 psycopg2-binary
 flake8
 mypy
 autoflake
 black
 isort[requirements_deprecated_finder]
-django_filter
-strawberry-django-plus

@@ -8,3 +8,6 @@ lint:
 
 mypy:
 	mypy .
+
+run:
+	sudo uwsgi --ini uwsgi.ini
