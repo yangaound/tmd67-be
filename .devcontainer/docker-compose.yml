@@ -13,6 +13,11 @@ services:
         # Optional Node.js version to install
         NODE_VERSION: "none"
 
+    environment:
+      USER_NAME: postgres
+      PASSWORD: postgres
+      HOST_NAME: db
+
     volumes:
       - ..:/workspace:cached
       - api-data:/tmp/api-data
