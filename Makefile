@@ -10,4 +10,4 @@ mypy:
 	mypy .
 
 run:
-	sudo uwsgi --ini uwsgi.ini
+	sudo -E uwsgi --ini uwsgi.ini
