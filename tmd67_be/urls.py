@@ -23,6 +23,7 @@ from tmd67_be.api.schema import schema
 router = routers.DefaultRouter()
 router.register(r"paths", views.ListPathView)
 router.register(r"projects", views.ListProjectView)
+router.register(r"levels", views.ListLevelView)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

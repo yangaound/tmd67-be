@@ -1,11 +1,11 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
 
-from tmd67_be.api.models import Path, Project
+from tmd67_be.api import models
 
 
-class PathSerializer(serializers.ModelSerializer):
+class PathSerializer(ModelSerializer):
     class Meta:
-        model = Path
+        model = models.Path
         fields = [
             "en_name",
             "tw_name",
@@ -15,13 +15,10 @@ class PathSerializer(serializers.ModelSerializer):
         ]
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectSerializer(ModelSerializer):
     class Meta:
-        model = Project
+        model = models.Project
         fields = [
-            "path",
-            "level",
-            "is_elective",
             "en_name",
             "tw_name",
             "en_description",
@@ -32,4 +29,15 @@ class ProjectSerializer(serializers.ModelSerializer):
             "tw_overview",
             "includes",
             "evaluation_form",
+        ]
+
+
+class LevelSerializer(ModelSerializer):
+    class Meta:
+        model = models.Level
+        fields = [
+            "path",
+            "project",
+            "level",
+            "is_elective",
         ]
