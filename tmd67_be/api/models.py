@@ -99,9 +99,6 @@ class Path(models.Model):
 
 
 class Project(models.Model):
-    path = models.ForeignKey(Path, models.CASCADE, related_name="projects")
-    level = models.IntegerField()
-    is_elective = models.BooleanField()
     en_name = models.CharField(max_length=255)
     tw_name = models.CharField(max_length=255)
     en_description = models.TextField()
@@ -112,3 +109,10 @@ class Project(models.Model):
     tw_overview = models.TextField()
     includes = models.JSONField()
     evaluation_form = models.URLField()
+
+
+class Level(models.Model):
+    path = models.ForeignKey(Path, models.CASCADE, related_name="levels")
+    project = models.ForeignKey(Project, models.CASCADE, related_name="levels")
+    level = models.IntegerField()
+    is_elective = models.BooleanField()
