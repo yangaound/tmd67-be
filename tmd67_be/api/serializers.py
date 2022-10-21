@@ -27,8 +27,10 @@ class ProjectSerializer(ModelSerializer):
             "tw_purpose",
             "en_overview",
             "tw_overview",
-            "includes",
-            "evaluation_form",
+            "en_includes",
+            "tw_includes",
+            "en_form",
+            "tw_form",
         ]
 
 
@@ -40,4 +42,5 @@ class LevelSerializer(ModelSerializer):
             "project",
             "level",
             "is_elective",
+            "is_old",
         ]

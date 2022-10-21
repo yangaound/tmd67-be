@@ -9,5 +9,10 @@ lint:
 mypy:
 	mypy .
 
+migrate:
+	python manage.py makemigrations
+	python manage.py migrate
+	python manage.py loaddata data.json
+
 run:
 	sudo -E uwsgi --ini uwsgi.ini

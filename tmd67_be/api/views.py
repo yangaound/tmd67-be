@@ -16,6 +16,6 @@ class ListProjectView(viewsets.GenericViewSet, mixins.ListModelMixin):
 
 
 class ListLevelView(viewsets.GenericViewSet, mixins.ListModelMixin):
-    filterset_fields = ("path", "project", "level", "is_elective")
+    filterset_fields = ("path", "project", "level", "is_elective", "is_old")
     queryset = models.Level.objects.all()
     serializer_class = serializers.LevelSerializer

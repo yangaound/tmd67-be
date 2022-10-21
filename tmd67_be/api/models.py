@@ -100,15 +100,17 @@ class Path(models.Model):
 
 class Project(models.Model):
     en_name = models.CharField(max_length=255)
-    tw_name = models.CharField(max_length=255)
-    en_description = models.TextField()
-    tw_description = models.TextField()
-    en_purpose = models.TextField()
-    tw_purpose = models.TextField()
-    en_overview = models.TextField()
-    tw_overview = models.TextField()
-    includes = models.JSONField()
-    evaluation_form = models.URLField()
+    tw_name = models.CharField(max_length=255, null=True)
+    en_description = models.TextField(null=True)
+    tw_description = models.TextField(null=True)
+    en_purpose = models.TextField(null=True)
+    tw_purpose = models.TextField(null=True)
+    en_overview = models.TextField(null=True)
+    tw_overview = models.TextField(null=True)
+    en_includes = models.JSONField(null=True)
+    tw_includes = models.JSONField(null=True)
+    en_form = models.JSONField(null=True)
+    tw_form = models.JSONField(null=True)
 
 
 class Level(models.Model):
@@ -116,3 +118,4 @@ class Level(models.Model):
     project = models.ForeignKey(Project, models.CASCADE, related_name="levels")
     level = models.IntegerField()
     is_elective = models.BooleanField()
+    is_old = models.BooleanField()

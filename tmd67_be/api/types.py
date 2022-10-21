@@ -43,8 +43,10 @@ class Project:
     tw_purpose: auto
     en_overview: auto
     tw_overview: auto
-    includes: auto
-    evaluation_form: auto
+    en_includes: auto
+    tw_includes: auto
+    en_form: auto
+    tw_form: auto
     levels: List["Level"]
 
 
@@ -55,6 +57,7 @@ class LevelFilter:
     project: ProjectFilter
     level: auto
     is_elective: auto
+    is_old: auto
 
 
 @strawberry_django.type(models.Level, filters=LevelFilter, pagination=True)
@@ -64,3 +67,4 @@ class Level:
     project: Project
     level: auto
     is_elective: auto
+    is_old: auto
