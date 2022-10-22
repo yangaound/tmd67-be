@@ -7,6 +7,7 @@ class PathSerializer(ModelSerializer):
     class Meta:
         model = models.Path
         fields = [
+            "id",
             "en_name",
             "tw_name",
             "initialism",
@@ -19,6 +20,7 @@ class ProjectSerializer(ModelSerializer):
     class Meta:
         model = models.Project
         fields = [
+            "id",
             "en_name",
             "tw_name",
             "en_description",
@@ -38,6 +40,7 @@ class LevelSerializer(ModelSerializer):
     class Meta:
         model = models.Level
         fields = [
+            "id",
             "path",
             "project",
             "level",
