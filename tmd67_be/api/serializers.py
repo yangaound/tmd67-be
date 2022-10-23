@@ -3,19 +3,6 @@ from rest_framework.serializers import ModelSerializer
 from tmd67_be.api import models
 
 
-class PathSerializer(ModelSerializer):
-    class Meta:
-        model = models.Path
-        fields = [
-            "id",
-            "en_name",
-            "tw_name",
-            "initialism",
-            "en_description",
-            "tw_description",
-        ]
-
-
 class ProjectSerializer(ModelSerializer):
     class Meta:
         model = models.Project
@@ -38,12 +25,29 @@ class ProjectSerializer(ModelSerializer):
 
 class LevelSerializer(ModelSerializer):
     class Meta:
+        depth = 1
         model = models.Level
         fields = [
-            "id",
-            "path",
-            "project",
             "level",
             "is_elective",
             "is_old",
+            "project",
         ]
+
+
+class PathSerializer(ModelSerializer):
+    class Meta:
+        model = models.Path
+        fields = [
+            "id",
+            "en_name",
+            "tw_name",
+            "initialism",
+            "en_description",
+            "tw_description",
+        ]
+
+    def to_representation(self, instance):
+        path = super().to_representation(instance)
+        path['levels'] = [LevelSerializer(instance=v).data for v in instance.levels.all()]
+        return path
