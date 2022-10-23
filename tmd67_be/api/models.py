@@ -94,6 +94,9 @@ class Path(models.Model):
     en_description = models.TextField()
     tw_description = models.TextField()
 
+    class Meta:
+        unique_together = (('en_name',),)
+
     def __str__(self):
         return f"Path(id={self.id}, en_name={self.en_name}"
 
@@ -112,10 +115,13 @@ class Project(models.Model):
     en_form = models.JSONField(null=True)
     tw_form = models.JSONField(null=True)
 
+    class Meta:
+        unique_together = (('en_name',),)
+
 
 class Level(models.Model):
-    path = models.ForeignKey(Path, models.CASCADE, related_name="levels")
-    project = models.ForeignKey(Project, models.CASCADE, related_name="levels")
     level = models.IntegerField()
     is_elective = models.BooleanField()
     is_old = models.BooleanField()
+    path = models.ForeignKey(Path, models.CASCADE, related_name="levels")
+    project = models.ForeignKey(Project, models.CASCADE, related_name="levels")
