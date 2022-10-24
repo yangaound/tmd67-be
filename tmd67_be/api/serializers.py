@@ -31,6 +31,7 @@ class LevelSerializer(ModelSerializer):
         fields = [
             "level",
             "en_name",
+            "tw_name",
             "is_elective",
             "is_old",
             "project",

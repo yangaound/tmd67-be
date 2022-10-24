@@ -61,6 +61,7 @@ class LevelFilter:
     project: ProjectFilter
     level: auto
     en_name: auto
+    tw_name: auto
     is_elective: auto
     is_old: auto
 
@@ -72,5 +73,6 @@ class Level:
     project: Project
     level: auto
     en_name: auto
+    tw_name: auto
     is_elective: auto
     is_old: auto
