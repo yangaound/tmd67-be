@@ -90,12 +90,13 @@ class Office(models.Model):
 class Path(models.Model):
     en_name = models.CharField(max_length=255)
     tw_name = models.CharField(max_length=255)
+    show_name = models.CharField(max_length=255)
     initialism = models.CharField(max_length=2)
     en_description = models.TextField()
     tw_description = models.TextField()
 
     class Meta:
-        unique_together = (('en_name',),)
+        unique_together = (("en_name",),)
 
     def __str__(self):
         return f"Path(id={self.id}, en_name={self.en_name}"
@@ -104,6 +105,7 @@ class Path(models.Model):
 class Project(models.Model):
     en_name = models.CharField(max_length=255)
     tw_name = models.CharField(max_length=255, null=True)
+    show_name = models.CharField(max_length=255)
     en_description = models.TextField(null=True)
     tw_description = models.TextField(null=True)
     en_purpose = models.TextField(null=True)
@@ -116,11 +118,12 @@ class Project(models.Model):
     tw_form = models.JSONField(null=True)
 
     class Meta:
-        unique_together = (('en_name',),)
+        unique_together = (("en_name",),)
 
 
 class Level(models.Model):
     level = models.IntegerField()
+    en_name = models.CharField(max_length=255)
     is_elective = models.BooleanField()
     is_old = models.BooleanField()
     path = models.ForeignKey(Path, models.CASCADE, related_name="levels")

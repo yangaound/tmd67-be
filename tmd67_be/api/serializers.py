@@ -10,6 +10,7 @@ class ProjectSerializer(ModelSerializer):
             "id",
             "en_name",
             "tw_name",
+            "show_name",
             "en_description",
             "tw_description",
             "en_purpose",
@@ -29,6 +30,7 @@ class LevelSerializer(ModelSerializer):
         model = models.Level
         fields = [
             "level",
+            "en_name",
             "is_elective",
             "is_old",
             "project",
@@ -42,6 +44,7 @@ class PathSerializer(ModelSerializer):
             "id",
             "en_name",
             "tw_name",
+            "show_name",
             "initialism",
             "en_description",
             "tw_description",
@@ -49,5 +52,7 @@ class PathSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         path = super().to_representation(instance)
-        path['levels'] = [LevelSerializer(instance=v).data for v in instance.levels.all()]
+        path["levels"] = [
+            LevelSerializer(instance=v).data for v in instance.levels.all()
+        ]
         return path

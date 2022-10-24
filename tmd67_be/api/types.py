@@ -11,6 +11,7 @@ class PathFilter:
     id: auto
     en_name: auto
     tw_name: auto
+    show_name: auto
     initialism: auto
 
 
@@ -19,6 +20,7 @@ class Path:
     id: auto
     en_name: auto
     tw_name: auto
+    show_name: auto
     initialism: auto
     en_description: auto
     tw_description: auto
@@ -30,6 +32,7 @@ class ProjectFilter:
     id: auto
     en_name: auto
     tw_name: auto
+    show_name: auto
 
 
 @strawberry_django.type(models.Project, filters=ProjectFilter, pagination=True)
@@ -37,6 +40,7 @@ class Project:
     id: auto
     en_name: auto
     tw_name: auto
+    show_name: auto
     en_description: auto
     tw_description: auto
     en_purpose: auto
@@ -56,6 +60,7 @@ class LevelFilter:
     path: PathFilter
     project: ProjectFilter
     level: auto
+    en_name: auto
     is_elective: auto
     is_old: auto
 
@@ -66,5 +71,6 @@ class Level:
     path: Path
     project: Project
     level: auto
+    en_name: auto
     is_elective: auto
     is_old: auto
