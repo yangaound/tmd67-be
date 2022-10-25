@@ -33,6 +33,7 @@ class LevelSerializer(ModelSerializer):
             "en_name",
             "tw_name",
             "is_elective",
+            "elective_number",
             "is_old",
             "project",
         ]
