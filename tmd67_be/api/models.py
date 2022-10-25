@@ -126,6 +126,7 @@ class Level(models.Model):
     en_name = models.CharField(max_length=255)
     tw_name = models.CharField(max_length=255)
     is_elective = models.BooleanField()
+    elective_number = models.IntegerField()
     is_old = models.BooleanField()
     path = models.ForeignKey(Path, models.CASCADE, related_name="levels")
     project = models.ForeignKey(Project, models.CASCADE, related_name="levels")

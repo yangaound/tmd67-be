@@ -75,4 +75,5 @@ class Level:
     en_name: auto
     tw_name: auto
     is_elective: auto
+    elective_number: auto
     is_old: auto
