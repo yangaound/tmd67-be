@@ -1,0 +1,5 @@
+djangorestframework
+django_filter
+strawberry-django-plus
+uwsgi
+psycopg2-binary
