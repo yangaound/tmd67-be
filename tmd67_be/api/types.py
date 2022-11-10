@@ -52,6 +52,24 @@ class Project:
     en_form: auto
     tw_form: auto
     levels: List["Level"]
+    includes: List["ProjectInclude"]
+
+
+@strawberry_django.filters.filter(models.ProjectInclude, lookups=True)
+class ProjectIncludeFilter:
+    id: auto
+    en_name: auto
+    tw_name: auto
+
+
+@strawberry_django.type(models.ProjectInclude, filters=ProjectIncludeFilter, pagination=True)
+class ProjectInclude:
+    id: auto
+    en_name: auto
+    tw_name: auto
+    en_form: auto
+    tw_form: auto
+    project: Project
 
 
 @strawberry_django.filters.filter(models.Level, lookups=True)
