@@ -9,6 +9,7 @@ from tmd67_be.api import types
 class Query:
     paths: List[types.Path] = strawberry.django.field()
     projects: List[types.Project] = strawberry.django.field()
+    project_includes: List[types.ProjectInclude] = strawberry.django.field()
     levels: List[types.Level] = strawberry.django.field()
 
 
