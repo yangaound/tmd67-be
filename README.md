@@ -14,6 +14,8 @@ Download `data.json` from `tmd67-data` repo and put it in this folder and run:
 
 Then you can see the api docs via http://localhost.
 
+GraphQL api can be viewed at http://localhost/graphql.
+
 ---
 ## Contributing
 Thanks for the contributing! Please fork this repo to your personal repositories and contribute with pull requests.
