@@ -1,5 +1,5 @@
 # tmd67-be
-Backend api of TM D67 website.
+Backend api of TM D67 website. Currently based on [Django REST framework](https://www.django-rest-framework.org/) and [Strawberry GraphQL Django](https://strawberry-graphql.github.io/strawberry-graphql-django/)
 
 ## Requirements
 Docker
