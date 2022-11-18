@@ -28,7 +28,7 @@ If you prefer use manual env, run:
     pip install -r requirements.txt
 
 ### Set up your database
-By default, Dev Containers will provide a Postgres DB for testing. See [here](https://github.com/toastmasters-d67/tmd67-be/blob/main/.devcontainer/docker-compose.yml#L29) for more details such as username.
+By default, Dev Containers will provide a Postgres DB on localhost for testing. See [here](https://github.com/toastmasters-d67/tmd67-be/blob/main/.devcontainer/docker-compose.yml#L29) for more details such as username.
 
 For data migration, download `data.json` from `tmd67-data` repo and put it in this folder and run:
 
