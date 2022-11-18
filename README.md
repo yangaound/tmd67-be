@@ -30,7 +30,7 @@ If you prefer use manual env, run:
 ### Set up your database
 By default, Dev Containers will provide a Postgres DB for testing. See [here](https://github.com/toastmasters-d67/tmd67-be/blob/main/.devcontainer/docker-compose.yml#L29) for more details such as username.
 
-Download `data.json` from `tmd67-data` repo and put it in this folder and run:
+For data migration, download `data.json` from `tmd67-data` repo and put it in this folder and run:
 
     make migrate
 
