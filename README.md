@@ -25,7 +25,7 @@ If you are using Vscode and have [Dev Containers](https://marketplace.visualstud
 
 If you prefer use manual env, run:
 
-    pip install -r requirements.txt
+    pip install -r requirements_dev.txt
 
 ### Set up your database
 By default, Dev Containers will provide a Postgres DB on localhost for testing. See [here](https://github.com/toastmasters-d67/tmd67-be/blob/main/.devcontainer/docker-compose.yml#L29) for more details such as username.
