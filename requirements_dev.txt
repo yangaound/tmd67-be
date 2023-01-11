@@ -3,6 +3,7 @@ django_filter
 strawberry-django-plus
 uwsgi
 psycopg2-binary
+whitenoise
 flake8
 mypy
 autoflake
