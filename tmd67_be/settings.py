@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "tmd67_be.api",
+    "tmd67_be.ac",
 ]
 
 MIDDLEWARE = [
