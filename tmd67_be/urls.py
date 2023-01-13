@@ -17,17 +17,24 @@ from django.urls import include, path
 from rest_framework import routers
 from strawberry.django.views import AsyncGraphQLView
 
+from tmd67_be.ac import views as ac_views
 from tmd67_be.api import views
 from tmd67_be.api.schema import schema
 
 router = routers.DefaultRouter()
 router.register(r"paths", views.ListPathView)
 router.register(r"projects", views.ListProjectView)
+router.register(
+    r"user-register", ac_views.ACIDRegister, basename="user-register"
+)
+router.register(
+    r"user-directory", ac_views.ACIDDirectory, basename="user-directory"
+)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path("", include('tmd67_be.ac.urls')),
-    path("", include(router.urls)),
+    path(r"accounts/", include("rest_framework.urls", namespace="admin")),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
+    path("", include(router.urls)),
 ]
