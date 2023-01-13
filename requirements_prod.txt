@@ -1,5 +1,6 @@
 djangorestframework
 django_filter
+django-fsm
 strawberry-django-plus
 uwsgi
 psycopg2-binary
