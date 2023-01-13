@@ -27,6 +27,7 @@ router.register(r"projects", views.ListProjectView)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    path("", include('tmd67_be.ac.urls')),
     path("", include(router.urls)),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
 ]
