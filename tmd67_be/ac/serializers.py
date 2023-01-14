@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from .models import Badge, Order, Ticket
+
 
 class ReprMixin:
     @staticmethod
@@ -39,3 +41,21 @@ class RetrieveIdentitySerializer(ReprMixin, serializers.Serializer):
 
     def create(self, validated_data):
         pass
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ticket
+        fields = "__all__"
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = "__all__"
+
+
+class BadgeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Badge
+        fields = "__all__"

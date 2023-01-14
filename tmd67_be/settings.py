@@ -149,4 +149,4 @@ STRAWBERRY_DJANGO = {
 }
 
 if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
-    pass
+    from .azure import *  # disable --remove-all-unused-imports
