@@ -1,5 +1,5 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
 from django_fsm import FSMField
 
 from tmd67_be.api.models import Club
@@ -13,7 +13,7 @@ class Ticket(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
-    state = FSMField(default='draft')
+    state = FSMField(default="draft")
     price = models.IntegerField(blank=True, null=True)
 
 
