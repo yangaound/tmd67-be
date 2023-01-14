@@ -5,7 +5,8 @@ class ReprMixin:
     @staticmethod
     def to_representation(instance):
         return {
-            "identity": instance.username,
+            "id": instance.id,
+            "account_identifier": instance.username,
             "first_name": instance.first_name,
             "last_name": instance.last_name,
             "email": instance.email,

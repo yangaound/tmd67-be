@@ -25,9 +25,9 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
         user = User(**validated_data)
         user.username = validated_data["email"]
         user.set_password(validated_data["password"])
+        user.save()
         serializer = self.get_serializer(user)
         headers = self.get_success_headers(serializer.data)
-        user.save()
 
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
