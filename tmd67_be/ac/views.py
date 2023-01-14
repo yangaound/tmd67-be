@@ -13,8 +13,8 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        _tmp = User(**serializer.data)
-        if User.objects.filter(email=_tmp.email).exists():
+        validated_data = serializer.validated_data
+        if User.objects.filter(email=validated_data["email"]).exists():
             raise exceptions.ValidationError(
                 {
                     "email": [
@@ -22,13 +22,13 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
                     ]
                 }
             )
-
-        user = User(**serializer.data)
-        user.username = _tmp.email
-        user.set_password(_tmp.password)
+        user = User(**validated_data)
+        user.username = validated_data["email"]
+        user.set_password(validated_data["password"])
+        serializer = self.get_serializer(user)
+        headers = self.get_success_headers(serializer.data)
         user.save()
 
-        headers = self.get_success_headers(serializer.data)
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )

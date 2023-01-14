@@ -124,10 +124,11 @@ class Project(models.Model):
 class ProjectInclude(models.Model):
     en_name = models.CharField(max_length=255, null=True)
     tw_name = models.CharField(max_length=255, null=True)
-    en_form = models.FileField(upload_to='en_form/', null=True)
-    tw_form = models.FileField(upload_to='tw_form/', null=True)
+    en_form = models.FileField(upload_to="en_form/", null=True)
+    tw_form = models.FileField(upload_to="tw_form/", null=True)
     project = models.ForeignKey(
-        Project, models.CASCADE, related_name="includes")
+        Project, models.CASCADE, related_name="includes"
+    )
 
 
 class Level(models.Model):

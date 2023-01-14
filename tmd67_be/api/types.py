@@ -62,7 +62,9 @@ class ProjectIncludeFilter:
     tw_name: auto
 
 
-@strawberry_django.type(models.ProjectInclude, filters=ProjectIncludeFilter, pagination=True)
+@strawberry_django.type(
+    models.ProjectInclude, filters=ProjectIncludeFilter, pagination=True
+)
 class ProjectInclude:
     id: auto
     en_name: auto

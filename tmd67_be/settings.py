@@ -148,5 +148,5 @@ STRAWBERRY_DJANGO = {
     "TYPE_DESCRIPTION_FROM_MODEL_DOCSTRING": True,
 }
 
-if 'WEBSITE_HOSTNAME' in os.environ:  # Running on Azure
-    from .azure import *
+if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
+    pass
