@@ -50,9 +50,18 @@ class TicketSerializer(serializers.ModelSerializer):
 
 
 class OrderSerializer(serializers.ModelSerializer):
+    state = serializers.CharField(max_length=10, read_only=True)
+    amount = serializers.IntegerField(
+        max_value=2147483647, min_value=0, read_only=True, default=0
+    )
+    created_time = serializers.DateTimeField(read_only=True, allow_null=True)
+    badge_set = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Badge.objects.all()
+    )
+
     class Meta:
         model = Order
-        fields = "__all__"
+        fields = ["id", "user", "state", "amount", "created_time", "badge_set"]
 
 
 class BadgeSerializer(serializers.ModelSerializer):
