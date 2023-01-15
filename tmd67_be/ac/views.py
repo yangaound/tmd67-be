@@ -2,7 +2,14 @@ from django.contrib.auth.models import User
 from rest_framework import exceptions, mixins, permissions, status, viewsets
 from rest_framework.response import Response
 
-from .serializers import CreateIdentitySerializer, RetrieveIdentitySerializer
+from .models import Badge, Order, Ticket
+from .serializers import (
+    BadgeSerializer,
+    CreateIdentitySerializer,
+    OrderSerializer,
+    RetrieveIdentitySerializer,
+    TicketSerializer,
+)
 
 
 class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
@@ -45,3 +52,24 @@ class ACIDDirectory(viewsets.GenericViewSet, mixins.ListModelMixin):
                 request.user, context=self.get_serializer_context()
             ).data
         )
+
+
+class TicketViewSet(viewsets.ModelViewSet):
+    filterset_fields = ("chinese_name", "english_name")
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+    filterset_fields = ("state", "user")
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+
+
+class BadgeViewSet(viewsets.ModelViewSet):
+    filterset_fields = ("first_name", "last_name", "order", "ticket", "club")
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = Badge.objects.all()
+    serializer_class = BadgeSerializer

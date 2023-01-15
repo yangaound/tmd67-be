@@ -42,3 +42,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = False
+
+SESSION_COOKIE_DOMAIN = "*.azurewebsites.net"
+CSRF_COOKIE_DOMAIN = "*.azurewebsites.net"
