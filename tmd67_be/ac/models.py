@@ -22,7 +22,10 @@ class Order(models.Model):
         auto_now_add=True, null=True, blank=True
     )
 
+    def __str__(self):
+        return f"Order<id={self.id}, created_time={self.created_time}>"
 
+    
 class Badge(models.Model):
     order = models.ForeignKey(Order, models.CASCADE)
     ticket = models.ForeignKey(Ticket, models.CASCADE)
