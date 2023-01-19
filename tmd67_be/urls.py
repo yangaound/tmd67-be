@@ -38,6 +38,8 @@ router.register(r"badges", ac_views.BadgeViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path(r"accounts/", include("rest_framework.urls", namespace="admin")),
+    path("google/auth/", ac_views.google_auth_rdr),
+    path("google/callback/", ac_views.google_auth_cb),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
     path("", include(router.urls)),
 ]

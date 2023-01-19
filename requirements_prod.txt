@@ -5,3 +5,5 @@ strawberry-django-plus
 uwsgi
 psycopg2-binary
 whitenoise
+requests_oauthlib
+PyJWT

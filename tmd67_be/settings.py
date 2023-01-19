@@ -150,3 +150,23 @@ STRAWBERRY_DJANGO = {
 
 if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
     from .azure import *  # disable --remove-all-unused-imports
+
+
+OAUTH2 = {
+    "Google": {
+        "auth_uri": "https://accounts.google.com/o/oauth2/v2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "client_id": os.environ.get(
+            "GG_CLIENT_ID",
+            "199688192618-d0fflt4qitm34of553ecr60fpbfmoirt.apps.googleusercontent.com",
+        ),
+        "client_secret": os.environ.get(
+            "GG_CLIENT_SECRET", "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"
+        ),
+        "redirect_uri": os.environ.get(
+            "GG_REDIRECT_URI",
+            "https://testtmd67api.azurewebsites.net/google/callback/",
+        ),
+        "scope": ["openid", "profile", "email"],
+    }
+}
