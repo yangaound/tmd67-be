@@ -4,3 +4,5 @@ django-fsm
 strawberry-django-plus
 psycopg2-binary
 whitenoise
+requests_oauthlib
+PyJWT

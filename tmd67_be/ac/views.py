@@ -1,4 +1,10 @@
+import jwt
+from django.conf import settings
+from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.http.response import HttpResponseRedirect
+from django.shortcuts import render
+from requests_oauthlib import OAuth2Session
 from rest_framework import exceptions, mixins, permissions, status, viewsets
 from rest_framework.response import Response
 
@@ -73,3 +79,56 @@ class BadgeViewSet(viewsets.ModelViewSet):
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Badge.objects.all()
     serializer_class = BadgeSerializer
+
+
+def google_auth_rdr(req):
+    conf = settings.OAUTH2["Google"]
+    oauth = OAuth2Session(
+        conf["client_id"],
+        redirect_uri=conf["redirect_uri"],
+        scope=conf["scope"],
+        state=req.GET.get("next", "/user-directory/"),
+    )
+    authorization_url, state = oauth.authorization_url(
+        conf["auth_uri"],
+        req.GET.get("next", ""),
+        access_type="offline",
+        prompt="consent",
+    )
+    return render(req, "auth_uri.html", {"AUTH_URI": authorization_url})
+
+
+def google_auth_cb(req):
+    data, status_code = {"error": req.GET.get("error", None)}, 400
+    if req.GET.get("code"):
+        conf = settings.OAUTH2["Google"]
+        try:
+            oauth = OAuth2Session(
+                conf["client_id"], redirect_uri=conf["redirect_uri"]
+            )
+            data = oauth.fetch_token(
+                conf["token_uri"],
+                code=req.GET.get("code"),
+                client_secret=conf["client_secret"],
+            )
+            id_token = data["id_token"]
+            state = req.GET.get("state")
+            open_info = jwt.decode(
+                id_token, options={"verify_signature": False}
+            )
+            try:
+                user = User.objects.get(username=open_info["email"])
+            except User.DoesNotExist:
+                user = User(
+                    username=open_info["email"],
+                    first_name=open_info["given_name"],
+                    last_name=open_info["family_name"],
+                )
+                user.save()
+            login(
+                req, user, backend="django.contrib.auth.backends.ModelBackend"
+            )
+            return HttpResponseRedirect(state)
+        except Exception as e:
+            data.update(message=req.GET.get("error", "") + " " + str(e))
+    return state

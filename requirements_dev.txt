@@ -10,3 +10,5 @@ mypy
 autoflake
 black
 isort[requirements_deprecated_finder]
+requests_oauthlib
+PyJWT

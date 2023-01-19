@@ -23,10 +23,10 @@ class Order(models.Model):
     def __str__(self):
         return f"Order<id={self.id}, created_time={self.created_time}>"
 
-    
+
 class Badge(models.Model):
     order = models.ForeignKey(Order, models.CASCADE)
     ticket = models.ForeignKey(Ticket, models.CASCADE)
     first_name = models.CharField(max_length=20, blank=True, null=True)
     last_name = models.CharField(max_length=20, blank=True, null=True)
-    club = models.ForeignKey('api.Club', models.CASCADE, blank=True, null=True)
+    club = models.ForeignKey("api.Club", models.CASCADE, blank=True, null=True)
