@@ -2,8 +2,6 @@ from django.contrib.auth.models import User
 from django.db import models
 from django_fsm import FSMField
 
-from tmd67_be.api.models import Club
-
 
 class Ticket(models.Model):
     chinese_name = models.CharField(max_length=100)
@@ -31,4 +29,4 @@ class Badge(models.Model):
     ticket = models.ForeignKey(Ticket, models.CASCADE)
     first_name = models.CharField(max_length=20, blank=True, null=True)
     last_name = models.CharField(max_length=20, blank=True, null=True)
-    club = models.ForeignKey(Club, models.CASCADE, blank=True, null=True)
+    club = models.ForeignKey('api.Club', models.CASCADE, blank=True, null=True)
