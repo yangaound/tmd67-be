@@ -1,3 +1,9 @@
+import datetime
+import hashlib
+import subprocess
+import time
+import urllib.parse
+
 import jwt
 from django.conf import settings
 from django.contrib.auth import login
@@ -93,11 +99,85 @@ class TicketViewSet(viewsets.ModelViewSet):
         return self.queryset.filter(order__user=self.request.user)
 
 
-class PaymentRecordViewSet(viewsets.ModelViewSet):
+class PaymentRecordViewSet(
+    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.CreateModelMixin
+):
     filterset_fields = ("order", "merchant_id", "is_paid")
     permission_classes = (permissions.IsAuthenticated,)
     queryset = PaymentRecord.objects.all()
     serializer_class = PaymentRecordSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(order__user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        """
+        Create a payment-record to store translation information
+        Return a webpage, from which connect to NewebPay's payment gateway.
+        """
+        data = self.request.data
+
+        # verify order
+        if not (
+            data["order"].isdigit()
+            and Order.objects.filter(id=data["order"]).exists()
+        ):
+            raise exceptions.ValidationError("Order not found.")
+
+        # translation info
+        order = Order.objects.get(id=data["order"])
+        conf = settings.NEWEB_PAY
+        time_stamp = int(time.time())
+        translation_data = {
+            "MerchantID": conf["MerchantID"],
+            "TimeStamp": time_stamp,
+            "Version": "2.0",
+            "RespondType": "application/json",
+            "MerchantOrderNo": f"{conf['MerchantID']}__{order.id}",
+            "Amt": order.amount,
+            "NotifyURL": conf["NotifyURL"],
+            "ReturnURL": "",
+            "ItemDesc": "TMD67",
+        }
+        payment_record = PaymentRecord(
+            order=order,
+            due_date=datetime.datetime.today() + datetime.timedelta(days=3),
+            description=data["description"] or None,
+            merchant_id=conf["MerchantID"],
+            is_paid=False,
+        )
+        payment_record.save()
+
+        # encrypt translation info with php
+        urlencode_translation_data = urllib.parse.urlencode(translation_data)
+        _cmd = f"""php tmd67_be/newebpay_encrypt/encrypt.php
+            '{urlencode_translation_data}'
+            '{conf['HashKey']}'
+            '{conf['HashIV']}'
+        """
+        _process = subprocess.Popen(_cmd.split(), stdout=subprocess.PIPE)
+        _stdout, ret_code = _process.communicate()
+        encrypted_data = _stdout.decode("utf8")
+        if ret_code != 0:
+            raise exceptions.ValidationError(
+                f"execute '{_cmd}' fail: {encrypted_data}"
+            )
+
+        # prepare context for rendering page
+        _check_code = f"HashKey={conf['HashKey']}&{encrypted_data}&HashIV={conf['HashIV']}"
+        hash_code = (
+            hashlib.sha256(_check_code.encode("utf8")).hexdigest().upper()
+        )
+        context = {
+            "mpg_gateway": conf["mpg_gateway"],
+            "HashKey": conf["HashKey"],
+            "MerchantID": conf["MerchantID"],
+            "TradeInfo": encrypted_data,
+            "TradeSha": hash_code,
+        }
+        webpage = render(request, "newebpay.html", context)
+
+        return webpage
 
 
 def google_auth_rdr(req):

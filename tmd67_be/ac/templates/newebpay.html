@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<html>
+  <head>
+    <title>Payment Form</title>
+  </head>
+  <body>
+    <h1>Payment Form</h1>
+    <form action="{{ mpg_gateway }}" method="post">
+
+      MID: <input type="text" name="MerchantID" value="{{ MerchantID }}" readonly><br>
+      Version: <input type="text" name="Version" value="2.0" readonly><br>
+      TradeInfo: <input type="text" name="TradeIfo" value="{{ TradeInfo }}" readonly><br>
+      TradeSha: <input type="text" name="TradeSha" value="{{ TradeSha }}" readonly><br>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>
+
+</html>

@@ -170,3 +170,14 @@ OAUTH2 = {
         "scope": ["openid", "profile", "email"],
     }
 }
+
+
+NEWEB_PAY = {
+    "HashKey": "HC5XMlzvwIkwQOL9IYlPvVQCgERguBZE",
+    "HashIV": "PeKK1u7ccsPwmPbC",
+    "MerchantID": "MS1677980901",
+    "mpg_gateway": "https://ccore.newebpay.com/MPG/mpg_gateway",
+    "NotifyURL": os.environ.get(
+        "NOTIFY_URL", "http://localhost:8000/neweb-pay-notify/"
+    ),
+}
