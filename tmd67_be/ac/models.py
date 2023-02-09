@@ -8,6 +8,7 @@ class TicketProduct(models.Model):
     english_name = models.CharField(max_length=100)
     price = models.IntegerField(blank=True, null=True)
     category = models.CharField(max_length=100)
+    description = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return f"TicketProduct<id={self.id}, name={self.english_name}>"
