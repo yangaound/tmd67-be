@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Badge, Order, Ticket
+from .models import Order, PaymentRecord, ProductItem, Ticket, TicketProduct
 
 
 class ReprMixin:
@@ -43,9 +43,9 @@ class RetrieveIdentitySerializer(ReprMixin, serializers.Serializer):
         pass
 
 
-class TicketSerializer(serializers.ModelSerializer):
+class TicketProductSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Ticket
+        model = TicketProduct
         fields = "__all__"
 
 
@@ -55,16 +55,65 @@ class OrderSerializer(serializers.ModelSerializer):
         max_value=2147483647, min_value=0, read_only=True, default=0
     )
     created_time = serializers.DateTimeField(read_only=True, allow_null=True)
-    badge_set = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Badge.objects.all()
-    )
 
     class Meta:
         model = Order
-        fields = ["id", "user", "state", "amount", "created_time", "badge_set"]
+        fields = [
+            "id",
+            "state",
+            "amount",
+            "created_time",
+            "updated_time",
+            "product_items",
+        ]
+
+    def to_internal_value(self, data):
+        data["user"] = self.context["request"].user
+
+        data["product_items"] = [
+            ProductItem(
+                ticket_product=TicketProduct.objects.get(
+                    pk=item["ticket_product"]
+                ),
+                quantity=item["quantity"],
+            )
+            for item in data["product_items"]
+        ]
+
+        data["amount"] = sum(
+            instance.quantity * instance.ticket_product.price
+            for instance in data["product_items"]
+        )
+        for instance in data["product_items"]:
+            instance.save()
+
+        if self.context["request"].method != "POST":
+            self.context["view"].get_object().product_items.all().delete()
+
+        return data
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["product_items"] = [
+            ProductItemSerializer(item).data
+            for item in instance.product_items.all()
+        ]
+        return data
 
 
-class BadgeSerializer(serializers.ModelSerializer):
+class TicketSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Badge
+        model = Ticket
+        fields = "__all__"
+
+
+class ProductItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductItem
+        fields = "__all__"
+
+
+class PaymentRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentRecord
         fields = "__all__"

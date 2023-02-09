@@ -2,18 +2,19 @@ import jwt
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from requests_oauthlib import OAuth2Session
 from rest_framework import exceptions, mixins, permissions, status, viewsets
 from rest_framework.response import Response
 
-from .models import Badge, Order, Ticket
+from .models import Order, PaymentRecord, Ticket, TicketProduct
 from .serializers import (
-    BadgeSerializer,
     CreateIdentitySerializer,
     OrderSerializer,
+    PaymentRecordSerializer,
     RetrieveIdentitySerializer,
+    TicketProductSerializer,
     TicketSerializer,
 )
 
@@ -60,25 +61,43 @@ class ACIDDirectory(viewsets.GenericViewSet, mixins.ListModelMixin):
         )
 
 
-class TicketViewSet(viewsets.ModelViewSet):
+class TicketProductViewSet(viewsets.GenericViewSet, mixins.ListModelMixin):
     filterset_fields = ("chinese_name", "english_name")
-    permission_classes = (permissions.IsAuthenticated,)
-    queryset = Ticket.objects.all()
-    serializer_class = TicketSerializer
+    queryset = TicketProduct.objects.all()
+    serializer_class = TicketProductSerializer
 
 
 class OrderViewSet(viewsets.ModelViewSet):
-    filterset_fields = ("state", "user")
+    filterset_fields = ("state",)
     permission_classes = (permissions.IsAuthenticated,)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    def get_queryset(self):
+        return self.queryset.filter(user=self.request.user)
 
-class BadgeViewSet(viewsets.ModelViewSet):
-    filterset_fields = ("first_name", "last_name", "order", "ticket", "club")
+
+class TicketViewSet(viewsets.ModelViewSet):
+    filterset_fields = (
+        "first_name",
+        "last_name",
+        "order",
+        "ticket_product",
+        "club",
+    )
     permission_classes = (permissions.IsAuthenticated,)
-    queryset = Badge.objects.all()
-    serializer_class = BadgeSerializer
+    queryset = Ticket.objects.all()
+    serializer_class = TicketSerializer
+
+    def get_queryset(self):
+        return self.queryset.filter(order__user=self.request.user)
+
+
+class PaymentRecordViewSet(viewsets.ModelViewSet):
+    filterset_fields = ("order", "merchant_id", "is_paid")
+    permission_classes = (permissions.IsAuthenticated,)
+    queryset = PaymentRecord.objects.all()
+    serializer_class = PaymentRecordSerializer
 
 
 def google_auth_rdr(req):
@@ -131,4 +150,5 @@ def google_auth_cb(req):
             return HttpResponseRedirect(state)
         except Exception as e:
             data.update(message=req.GET.get("error", "") + " " + str(e))
-    return state
+            return JsonResponse(data, status=500)
+    return JsonResponse(data, status=status_code)
