@@ -58,3 +58,9 @@ class PathSerializer(ModelSerializer):
             LevelSerializer(instance=v).data for v in instance.levels.all()
         ]
         return path
+
+
+class ClubSerializer(ModelSerializer):
+    class Meta:
+        model = models.Club
+        fields = "__all__"
