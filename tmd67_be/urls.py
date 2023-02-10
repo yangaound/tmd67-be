@@ -24,6 +24,8 @@ from tmd67_be.api.schema import schema
 router = routers.DefaultRouter()
 router.register(r"paths", views.ListPathView)
 router.register(r"projects", views.ListProjectView)
+router.register(r"clubs", views.ListClubView)
+
 router.register(
     r"user-register", ac_views.ACIDRegister, basename="user-register"
 )

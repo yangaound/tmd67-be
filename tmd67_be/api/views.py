@@ -23,3 +23,11 @@ class ListProjectView(
     filterset_fields = ("id", "en_name", "tw_name", "show_name")
     queryset = models.Project.objects.all()
     serializer_class = serializers.ProjectSerializer
+
+
+class ListClubView(
+    viewsets.GenericViewSet, mixins.ListModelMixin, mixins.RetrieveModelMixin
+):
+    filterset_fields = ("chinese_name", "english_name")
+    queryset = models.Club.objects.all()
+    serializer_class = serializers.ClubSerializer
