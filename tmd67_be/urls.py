@@ -30,9 +30,11 @@ router.register(
 router.register(
     r"user-directory", ac_views.ACIDDirectory, basename="user-directory"
 )
-router.register(r"tickets", ac_views.TicketViewSet)
+router.register(r"ticket-products", ac_views.TicketProductViewSet)
 router.register(r"orders", ac_views.OrderViewSet)
-router.register(r"badges", ac_views.BadgeViewSet)
+router.register(r"tickets", ac_views.TicketViewSet)
+router.register(r"payment-records", ac_views.PaymentRecordViewSet)
+
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

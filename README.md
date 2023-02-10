@@ -7,6 +7,9 @@ Docker
 (Recommends) Vscode with plugin [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 ---
+## Doc
+https://www.notion.so/c2caef7031e34d02873b4a40f9d47108?v=ea44cdf488634e3bbb763a72805e2a9d&p=3b491b62140344618c9a53b48324bdd5&pm=s
+
 ## Run pruduction server
 Download `data.json` from `tmd67-data` repo and put it in this folder and run:
 
