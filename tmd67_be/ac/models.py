@@ -48,8 +48,15 @@ class ProductItem(models.Model):
 
 
 class PaymentRecord(models.Model):
+    transaction_identifier = models.CharField(max_length=255)
+    merchant_id = models.CharField(max_length=100)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
-    due_date = models.DateTimeField(null=True, blank=True)
+    due_time = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=255, blank=True, null=True)
-    merchant_id = models.CharField(max_length=255, blank=True, null=True)
-    is_paid = models.BooleanField(default=False)
+    status = models.CharField(max_length=50, blank=True, null=True)
+    message = models.CharField(max_length=255, blank=True, null=True)
+    result = models.TextField(max_length=512, blank=True, null=True)
+    created_time = models.DateTimeField(
+        auto_now_add=True, null=True, blank=True
+    )
+    updated_time = models.DateTimeField(auto_now=True, null=True, blank=True)

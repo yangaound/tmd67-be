@@ -1,10 +1,12 @@
 <?php
 
-$data=$argv[1];
+$data1=$argv[1];
 $key=$argv[2];
 $iv=$argv[3];
 
-$encrypted_data=bin2hex(openssl_encrypt($data, "AES-256-CBC", $key, OPENSSL_RAW_DATA, $iv));
-echo $encrypted_data;
+$edata1=bin2hex(openssl_encrypt($data1, "AES-256-CBC", $key,
+OPENSSL_RAW_DATA, $iv));
+
+echo $edata1;
 
 ?>

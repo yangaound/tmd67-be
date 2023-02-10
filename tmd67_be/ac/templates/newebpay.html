@@ -10,12 +10,13 @@
   </head>
   <body>
     <h1>Payment Form</h1>
-    <form action="{{ mpg_gateway }}" method="post">
+    <form action="{{ MPG_GW }}" method="post">
 
-      MID: <input type="text" name="MerchantID" value="{{ MerchantID }}" readonly><br>
-      Version: <input type="text" name="Version" value="2.0" readonly><br>
-      TradeInfo: <input type="text" name="TradeIfo" value="{{ TradeInfo }}" readonly><br>
-      TradeSha: <input type="text" name="TradeSha" value="{{ TradeSha }}" readonly><br>
+      StoreID: <input type="text" name="MerchantID" value="{{ MerchantID }}" readonly><br>
+      Version: <input type="text" name="Version" value="{{ Version }}" ><br>
+      TradeInfo: <input type="textarea" name="TradeInfo" value="{{ TradeInfo }}"><br>
+      TradeSha: <input type="textarea" name="TradeSha" value="{{ TradeSha }}"><br>
+      Amount: {{ Amount }}<br><br>
       <input type="submit" value="Submit">
     </form>
   </body>
