@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<html>
+  <head>
+    <title>Payment Form</title>
+  </head>
+  <body>
+    <h1>Payment Form</h1>
+    <form action="{{ MPG_GW }}" method="post">
+
+      StoreID: <input type="text" name="MerchantID" value="{{ MerchantID }}" readonly><br>
+      Version: <input type="text" name="Version" value="{{ Version }}" ><br>
+      TradeInfo: <input type="textarea" name="TradeInfo" value="{{ TradeInfo }}"><br>
+      TradeSha: <input type="textarea" name="TradeSha" value="{{ TradeSha }}"><br>
+      Amount: {{ Amount }}<br><br>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>
+
+</html>

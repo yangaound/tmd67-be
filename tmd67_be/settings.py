@@ -170,3 +170,22 @@ OAUTH2 = {
         "scope": ["openid", "profile", "email"],
     }
 }
+
+
+NEWEB_PAY = {
+    "MerchantID": os.environ.get("MerchantID", "MS147585948"),
+    "HashKey": os.environ.get("HashKey", "CJ2veMaN9yTOZ1f90lN3SVPHEinSloU5"),
+    "HashIV": os.environ.get("HashIV", "C0omfPbq8R2epI1P"),
+    "Version": os.environ.get("Version", "2.0"),
+    "MPG_GW": os.environ.get(
+        "MPG_GW", "https://ccore.newebpay.com/MPG/mpg_gateway"
+    ),
+    "NotifyURL": os.environ.get(
+        "NOTIFY_URL",
+        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-notify",
+    ),
+    "ReturnURL": os.environ.get(
+        "RETURN_URL",
+        "",
+    ),
+}

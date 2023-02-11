@@ -114,6 +114,22 @@ class ProductItemSerializer(serializers.ModelSerializer):
 
 
 class PaymentRecordSerializer(serializers.ModelSerializer):
+    transaction_identifier = serializers.CharField(
+        max_length=255, read_only=True, allow_null=False, allow_blank=False
+    )
+    merchant_id = serializers.CharField(
+        max_length=100, read_only=True, allow_null=False, allow_blank=False
+    )
+    status = serializers.CharField(
+        max_length=40, read_only=True, allow_null=False, allow_blank=False
+    )
+    message = serializers.CharField(
+        max_length=40, read_only=True, allow_null=False, allow_blank=False
+    )
+    result = serializers.CharField(
+        max_length=512, read_only=True, allow_null=False, allow_blank=False
+    )
+
     class Meta:
         model = PaymentRecord
         fields = "__all__"

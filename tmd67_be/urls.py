@@ -44,6 +44,10 @@ urlpatterns = [
     path(r"accounts/", include("rest_framework.urls", namespace="admin")),
     path("google/auth/", ac_views.google_auth_rdr),
     path("google/callback/", ac_views.google_auth_cb),
+    path(
+        "payment-records/neweb_pay_notify/",
+        ac_views.PaymentRecordViewSet.neweb_pay_notify,
+    ),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
     path("", include(router.urls)),
 ]
