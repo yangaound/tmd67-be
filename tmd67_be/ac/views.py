@@ -181,7 +181,7 @@ class PaymentRecordViewSet(
         payment_record = PaymentRecord(
             order=order,
             due_time=datetime.datetime.utcnow() + datetime.timedelta(days=3),
-            description=data["description"] or None,
+            description=data.get("description"),
             merchant_id=conf["MerchantID"],
         )
         payment_record.save()
