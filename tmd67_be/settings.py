@@ -182,7 +182,7 @@ NEWEB_PAY = {
     ),
     "NotifyURL": os.environ.get(
         "NOTIFY_URL",
-        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-notify",
+        "https://testtmd67api.azurewebsites.net/payment-records/neweb_pay_notify/",
     ),
     "ReturnURL": os.environ.get(
         "RETURN_URL",
