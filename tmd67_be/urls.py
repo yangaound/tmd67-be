@@ -48,6 +48,10 @@ urlpatterns = [
         "payment-records/neweb_pay_notify/",
         ac_views.PaymentRecordViewSet.neweb_pay_notify,
     ),
+    path(
+        "payment-records/neweb_pay_return/",
+        ac_views.PaymentRecordViewSet.neweb_pay_return,
+    ),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
     path("", include(router.urls)),
 ]
