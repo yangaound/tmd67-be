@@ -45,11 +45,11 @@ urlpatterns = [
     path("google/auth/", ac_views.google_auth_rdr),
     path("google/callback/", ac_views.google_auth_cb),
     path(
-        "payment-records/neweb_pay_notify/",
+        "payment-records/neweb-pay-notify/",
         ac_views.PaymentRecordViewSet.neweb_pay_notify,
     ),
     path(
-        "payment-records/neweb_pay_return/",
+        "payment-records/neweb-pay-return/",
         ac_views.PaymentRecordViewSet.neweb_pay_return,
     ),
     path("graphql/", AsyncGraphQLView.as_view(schema=schema)),
