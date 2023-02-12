@@ -48,7 +48,6 @@ class ProductItem(models.Model):
 
 
 class PaymentRecord(models.Model):
-    transaction_identifier = models.CharField(max_length=255)
     merchant_id = models.CharField(max_length=100)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
     due_time = models.DateTimeField(null=True, blank=True)

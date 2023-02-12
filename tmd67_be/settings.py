@@ -129,7 +129,14 @@ STATIC_URL = "static/"
 STATIC_ROOT = "static"
 MEDIA_URL = "media/"
 MEDIA_ROOT = "media"
-LOGOUT_REDIRECT_URL = "/"
+
+LOGIN_REDIRECT_URL = os.environ.get(
+    "LOGIN_REDIRECT_URL", "https://ac.toastmasters.org.tw"
+)
+LOGOUT_REDIRECT_URL = os.environ.get(
+    "LOGOUT_REDIRECT_URL", "https://ac.toastmasters.org.tw"
+)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
@@ -180,12 +187,13 @@ NEWEB_PAY = {
     "MPG_GW": os.environ.get(
         "MPG_GW", "https://ccore.newebpay.com/MPG/mpg_gateway"
     ),
+    "ItemDesc": "2023 Annual Conference Ticket",
     "NotifyURL": os.environ.get(
         "NOTIFY_URL",
-        "https://testtmd67api.azurewebsites.net/payment-records/neweb_pay_notify/",
+        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-notify/"
     ),
     "ReturnURL": os.environ.get(
         "RETURN_URL",
-        "",
+        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-return/"
     ),
 }
