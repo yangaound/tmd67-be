@@ -190,10 +190,10 @@ NEWEB_PAY = {
     "ItemDesc": "2023 Annual Conference Ticket",
     "NotifyURL": os.environ.get(
         "NOTIFY_URL",
-        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-notify/"
+        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-notify/",
     ),
     "ReturnURL": os.environ.get(
         "RETURN_URL",
-        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-return/"
+        "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-return/",
     ),
 }
