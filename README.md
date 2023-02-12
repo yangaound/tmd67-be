@@ -7,8 +7,26 @@ Docker
 (Recommends) Vscode with plugin [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 ---
-## Doc
-https://www.notion.so/c2caef7031e34d02873b4a40f9d47108?v=ea44cdf488634e3bbb763a72805e2a9d&p=3b491b62140344618c9a53b48324bdd5&pm=s
+## Docs
+- base-url: https://testtmd67api.azurewebsites.net/
+- spec: https://www.notion.so/c2caef7031e34d02873b4a40f9d47108
+
+## 環境變數
+| 名稱 | 值（模擬）                            | 模組       | 註 |
+| --- |--------------------------------|----------| --- |
+| LOGOUT_REDIRECT_URL | https://ac.toastmasters.org.tw | Identity | 首頁，支付後追加/me |
+| LOGIN_REDIRECT_URL | https://ac.toastmasters.org.tw/me | Identity | 登入後的頁面 |
+| MerchantID | MS12345678                     | Payment  | 藍新 |
+| HashKey | AAAvw3YlqoEk6G4HqRKDAYpHKZWxBBB | Payment  | 藍新 |
+| HashIV | AAAC1FplieBBB                  | Payment  | 藍新 |
+| Version | 2.0                            | Payment  | 藍新 |
+| MPG_GW | https://ccore.newebpay.com/MPG/mpg_gateway | Payment  | 藍新 |
+| ItemDesc | 2023 Annual Conference Ticket  | Payment  | 藍新 |
+| RETURN_URL | http://gw.tmd67.com/newebpay-return/ | Payment  | 藍新 |
+| NOTIFY_URL | http://gw.tmd67.com/newebpay-return/ | Payment  | 藍新 |
+| GG_CLIENT_ID | fmoirt.apps.googleusercontent.com | Google   | Google |
+| GG_CLIENT_SECRET | U18cIQr0Nb5EEE                 | Google   | Google |
+| GG_REDIRECT_URI | https://api.tmd67.com/google/callback/ | Google   | Google |
 
 ## Run pruduction server
 Download `data.json` from `tmd67-data` repo and put it in this folder and run:

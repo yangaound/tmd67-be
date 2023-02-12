@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import exceptions, serializers
 
 from .models import Order, PaymentRecord, ProductItem, Ticket, TicketProduct
@@ -72,28 +73,30 @@ class OrderSerializer(serializers.ModelSerializer):
 
         if data["product_items"] is None:
             raise exceptions.ValidationError(
-                {"data": ["This field can not be null."]}
+                {"product_items": ["This field may not be null."]}
             )
 
-        data["product_items"] = [
-            ProductItem(
-                ticket_product=TicketProduct.objects.get(
-                    pk=item["ticket_product"]
-                ),
-                quantity=item["quantity"],
+        with transaction.atomic():
+            data["product_items"] = [
+                ProductItem(
+                    ticket_product=TicketProduct.objects.get(
+                        pk=item["ticket_product"]
+                    ),
+                    quantity=item["quantity"],
+                )
+                for item in data["product_items"]
+            ]
+
+            data["amount"] = sum(
+                instance.quantity * instance.ticket_product.price
+                for instance in data["product_items"]
             )
-            for item in data["product_items"]
-        ]
 
-        data["amount"] = sum(
-            instance.quantity * instance.ticket_product.price
-            for instance in data["product_items"]
-        )
-        for instance in data["product_items"]:
-            instance.save()
+            if self.context["request"].method != "POST":
+                self.context["view"].get_object().product_items.all().delete()
 
-        if self.context["request"].method != "POST":
-            self.context["view"].get_object().product_items.all().delete()
+            for instance in data["product_items"]:
+                instance.save()
 
         return data
 
@@ -119,9 +122,6 @@ class ProductItemSerializer(serializers.ModelSerializer):
 
 
 class PaymentRecordSerializer(serializers.ModelSerializer):
-    transaction_identifier = serializers.CharField(
-        max_length=255, read_only=True, allow_null=False, allow_blank=False
-    )
     merchant_id = serializers.CharField(
         max_length=100, read_only=True, allow_null=False, allow_blank=False
     )
@@ -131,8 +131,10 @@ class PaymentRecordSerializer(serializers.ModelSerializer):
     message = serializers.CharField(
         max_length=40, read_only=True, allow_null=False, allow_blank=False
     )
-    result = serializers.CharField(
-        max_length=512, read_only=True, allow_null=False, allow_blank=False
+    result = serializers.JSONField(
+        allow_null=True,
+        read_only=True,
+        style={"base_template": "textarea.html"},
     )
 
     class Meta:
