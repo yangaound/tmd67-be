@@ -33,7 +33,9 @@ class Order(models.Model):
 
 class Ticket(models.Model):
     order = models.ForeignKey(Order, models.CASCADE)
-    ticket_product = models.ForeignKey(TicketProduct, models.CASCADE)
+    ticket_products = models.ManyToManyField(
+        TicketProduct, related_name="tickets"
+    )
     first_name = models.CharField(max_length=20, blank=True, null=True)
     last_name = models.CharField(max_length=20, blank=True, null=True)
     club = models.ForeignKey("api.Club", models.CASCADE, blank=True, null=True)
@@ -50,7 +52,6 @@ class ProductItem(models.Model):
 class PaymentRecord(models.Model):
     merchant_id = models.CharField(max_length=100)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
-    due_time = models.DateTimeField(null=True, blank=True)
     description = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
     message = models.CharField(max_length=255, blank=True, null=True)
