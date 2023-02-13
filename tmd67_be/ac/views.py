@@ -90,7 +90,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         "first_name",
         "last_name",
         "order",
-        "ticket_product",
+        "ticket_products",
         "club",
     )
     permission_classes = (permissions.IsAuthenticated,)
@@ -186,7 +186,6 @@ class PaymentRecordViewSet(
         payment_record = PaymentRecord(
             order=order,
             merchant_id=neweb_pay_conf["MerchantID"],
-            due_time=datetime.datetime.utcnow() + datetime.timedelta(days=3),
             description=data.get("description"),
         )
         payment_record.save()
