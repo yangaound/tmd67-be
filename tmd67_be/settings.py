@@ -187,7 +187,7 @@ NEWEB_PAY = {
     "MPG_GW": os.environ.get(
         "MPG_GW", "https://ccore.newebpay.com/MPG/mpg_gateway"
     ),
-    "ItemDesc": "2023 Annual Conference Ticket",
+    "ItemDesc": os.environ.get("ItemDesc", "2023 Annual Conference Ticket"),
     "NotifyURL": os.environ.get(
         "NOTIFY_URL",
         "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-notify/",

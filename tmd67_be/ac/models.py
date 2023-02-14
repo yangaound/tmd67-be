@@ -55,7 +55,7 @@ class PaymentRecord(models.Model):
     description = models.CharField(max_length=255, blank=True, null=True)
     status = models.CharField(max_length=50, blank=True, null=True)
     message = models.CharField(max_length=255, blank=True, null=True)
-    result = models.TextField(max_length=512, blank=True, null=True)
+    result = models.JSONField(null=True)
     created_time = models.DateTimeField(
         auto_now_add=True, null=True, blank=True
     )

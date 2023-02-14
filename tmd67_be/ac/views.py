@@ -1,4 +1,3 @@
-import datetime
 import hashlib
 import json
 import time
@@ -8,6 +7,7 @@ import jwt
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.db import transaction
 from django.http.response import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from requests_oauthlib import OAuth2Session
@@ -31,6 +31,7 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
     serializer_class = CreateIdentitySerializer
     queryset = User.objects.all()
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -110,7 +111,7 @@ class PaymentRecordViewSet(
     serializer_class = PaymentRecordSerializer
 
     @staticmethod
-    def _write_off_trade(request, *args, **kwargs):
+    def _write_off_trade(request):
         data = request.data
         neweb_pay_conf = settings.NEWEB_PAY
 
@@ -123,7 +124,7 @@ class PaymentRecordViewSet(
         transaction_data = json.loads(_transaction_msg)
 
         # Retrieve the Payment Record corresponding to the transaction
-        merchant_id, payment_record_id = transaction_data["Result"][
+        merchant_id, payment_record_id, _ = transaction_data["Result"][
             "MerchantOrderNo"
         ].split("_")
         try:
@@ -148,6 +149,7 @@ class PaymentRecordViewSet(
 
     @staticmethod
     @api_view(["POST"])
+    @transaction.atomic
     def neweb_pay_notify(request, *args, **kwargs):
         """Handle NewebPay's NotifyURL"""
         data = PaymentRecordViewSet._write_off_trade(request, *args, **kwargs)
@@ -155,47 +157,57 @@ class PaymentRecordViewSet(
 
     @staticmethod
     @api_view(["POST"])
+    @transaction.atomic
     def neweb_pay_return(request, *args, **kwargs):
         """Handle NewebPay's ReturnURL"""
         _ = PaymentRecordViewSet._write_off_trade(request, *args, **kwargs)
-        return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
+        return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL + "/me")
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         """
-        Create a payment record to record NewebPay’s trade.
+        Create a payment record to record NewebPay’s trade information.
         Return a webpage, from which connect to NewebPay's payment gateway.
         """
-        data = self.request.data
+        neweb_pay_conf = settings.NEWEB_PAY
 
-        # Verify the input `order`
-        if not data["order"].isdigit():
-            raise exceptions.ValidationError("Order format unexpected.")
+        # Extract input
+        order_id = self.request.data.get("order")
+        description = self.request.data.get("description", "")
 
-        order_qs = Order.objects.filter(id=data["order"])
+        # Validate the input order
+        if not str(order_id).isdigit():
+            raise exceptions.ValidationError(
+                {"order": ["Order format unexpected."]}
+            )
+
+        order_qs = Order.objects.filter(id=order_id)
         if request.user.is_authenticated:
-            data["order"].isdigit()
             order_qs = order_qs.filter(user=request.user)
 
         if not order_qs.exists():
-            raise exceptions.ValidationError("Order not found.")
+            raise exceptions.ValidationError({"order": [f"Order not found."]})
+
+        order = order_qs[0]
+        if order.state == "paid":
+            raise exceptions.ValidationError({"order": [f"Order had paid."]})
 
         # Prepare transaction info
-        order = Order.objects.get(id=data["order"])
-        neweb_pay_conf = settings.NEWEB_PAY
-
         payment_record = PaymentRecord(
             order=order,
             merchant_id=neweb_pay_conf["MerchantID"],
-            description=data.get("description"),
+            description=description,
         )
         payment_record.save()
-
+        time_stamp = int(time.time())
         transaction_data = {
             "MerchantID": neweb_pay_conf["MerchantID"],
             "RespondType": "JSON",
-            "TimeStamp": int(time.time()),
+            "TimeStamp": time_stamp,
             "Version": neweb_pay_conf["Version"],
-            "MerchantOrderNo": f"{neweb_pay_conf['MerchantID']}_{payment_record.id}",
+            "MerchantOrderNo": f"{neweb_pay_conf['MerchantID']}_{payment_record.id}_{time_stamp}"[
+                :30
+            ],
             "Amt": order.amount,
             "ItemDesc": neweb_pay_conf["ItemDesc"],
             "NotifyURL": neweb_pay_conf["NotifyURL"],
@@ -237,7 +249,7 @@ def google_auth_rdr(req):
         conf["client_id"],
         redirect_uri=conf["redirect_uri"],
         scope=conf["scope"],
-        state=req.GET.get("next", "/user-directory/"),
+        state=req.GET.get("next", settings.LOGIN_REDIRECT_URL),
     )
     authorization_url, state = oauth.authorization_url(
         conf["auth_uri"],
@@ -248,20 +260,21 @@ def google_auth_rdr(req):
     return render(req, "auth_uri.html", {"AUTH_URI": authorization_url})
 
 
+@transaction.atomic
 def google_auth_cb(req):
-    data, status_code = {"error": req.GET.get("error", None)}, 400
+    conf = settings.OAUTH2["Google"]
+
     if req.GET.get("code"):
-        conf = settings.OAUTH2["Google"]
         try:
             oauth = OAuth2Session(
                 conf["client_id"], redirect_uri=conf["redirect_uri"]
             )
-            data = oauth.fetch_token(
+            idp_resp = oauth.fetch_token(
                 conf["token_uri"],
                 code=req.GET.get("code"),
                 client_secret=conf["client_secret"],
             )
-            id_token = data["id_token"]
+            id_token = idp_resp["id_token"]
             state = req.GET.get("state")
             open_info = jwt.decode(
                 id_token, options={"verify_signature": False}
@@ -273,13 +286,16 @@ def google_auth_cb(req):
                     username=open_info["email"],
                     first_name=open_info["given_name"],
                     last_name=open_info["family_name"],
+                    email=open_info["email"],
                 )
                 user.save()
             login(
                 req, user, backend="django.contrib.auth.backends.ModelBackend"
             )
-            return HttpResponseRedirect(state)
+            resp = HttpResponseRedirect(state)
         except Exception as e:
-            data.update(message=req.GET.get("error", "") + " " + str(e))
-            return JsonResponse(data, status=500)
-    return JsonResponse(data, status=status_code)
+            resp = JsonResponse({"error": str(e)}, status=500)
+    else:
+        resp = JsonResponse({"error": req.GET.get("error", None)}, 400)
+
+    return resp
