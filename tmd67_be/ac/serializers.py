@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 
 from .models import Order, PaymentRecord, ProductItem, Ticket, TicketProduct
 
@@ -69,6 +69,11 @@ class OrderSerializer(serializers.ModelSerializer):
 
     def to_internal_value(self, data):
         data["user"] = self.context["request"].user
+
+        if data["product_items"] is None:
+            raise exceptions.ValidationError(
+                {"data": ["This field can not be null."]}
+            )
 
         data["product_items"] = [
             ProductItem(
