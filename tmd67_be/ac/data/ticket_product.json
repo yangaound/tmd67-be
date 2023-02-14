@@ -1,0 +1,57 @@
+[
+    {
+        "model": "ac.TicketProduct",
+        "pk": 1,
+        "fields": {
+            "category": "combo",
+            "chinese_name": "早鳥套餐",
+            "english_name": "Early Bird 2 Day Pass",
+            "price": 2500,
+            "description": "The lowest price you can get – first come, first serve. Includes access to both conference days at 2023 Annual Conference, souvenirs and dinner party on site."
+        }
+    },
+    {
+        "model": "ac.TicketProduct",
+        "pk": 2,
+        "fields": {
+            "category": "core",
+            "chinese_name": "兩日票",
+            "english_name": "2 days pass",
+            "price": 2200,
+            "description": "The lowest price you can get – first come, first serve. Includes access to both conference days at 2023 Annual Conference, souvenirs and dinner party on site."
+        }
+    },
+    {
+        "model": "ac.TicketProduct",
+        "pk": 3,
+            "fields": {
+            "category": "core",
+            "chinese_name": "首日票",
+            "english_name": "First Day Pass",
+            "price": 1300,
+            "description": "The lowest price you can get – first come, first serve. Includes access to both conference days at 2023 Annual Conference, souvenirs and dinner party on site."
+        }
+    },
+    {
+        "model": "ac.TicketProduct",
+        "pk": 4,
+        "fields": {
+            "category": "core",
+            "chinese_name": "次日票",
+            "english_name": "Second Day Pass",
+            "price": 1300,
+            "description": "The lowest price you can get – first come, first serve. Includes access to both conference days at 2023 Annual Conference, souvenirs and dinner party on site."
+         }
+    },
+    {
+        "model": "ac.TicketProduct",
+        "pk": 5,
+        "fields": {
+            "category": "rider",
+            "chinese_name": "晚餐附加票",
+            "english_name": "Dinner Banquet",
+            "price": 800,
+            "description": "The first day of conference, we provide a night banquet for all our guests who wants to attend."
+        }
+    }
+]
