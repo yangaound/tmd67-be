@@ -125,11 +125,20 @@ class PaymentRecordSerializer(serializers.ModelSerializer):
     merchant_id = serializers.CharField(
         max_length=100, read_only=True, allow_null=False, allow_blank=False
     )
+    respond_type = serializers.CharField(
+        max_length=20, read_only=True, allow_null=False, allow_blank=False
+    )
+    version = serializers.CharField(
+        max_length=20, read_only=True, allow_null=False, allow_blank=False
+    )
+    merchant_order_no = serializers.CharField(
+        max_length=30, read_only=True, allow_null=False, allow_blank=False
+    )
     status = serializers.CharField(
-        max_length=40, read_only=True, allow_null=False, allow_blank=False
+        max_length=20, read_only=True, allow_null=True, allow_blank=False
     )
     message = serializers.CharField(
-        max_length=40, read_only=True, allow_null=False, allow_blank=False
+        max_length=100, read_only=True, allow_null=True, allow_blank=False
     )
     result = serializers.JSONField(
         allow_null=True,

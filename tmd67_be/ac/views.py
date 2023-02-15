@@ -1,6 +1,5 @@
 import hashlib
 import json
-import time
 import urllib.parse
 
 import jwt
@@ -197,17 +196,22 @@ class PaymentRecordViewSet(
             order=order,
             merchant_id=neweb_pay_conf["MerchantID"],
             description=description,
+            status=None,
         )
         payment_record.save()
-        time_stamp = int(time.time())
+        int_ts = int(payment_record.created_time.timestamp())
+        merchant_order_no = (
+            f"{neweb_pay_conf['MerchantID']}_{payment_record.id}_{int_ts}"[:30]
+        )
+        payment_record.merchant_order_no = merchant_order_no
+        payment_record.save()
+
         transaction_data = {
             "MerchantID": neweb_pay_conf["MerchantID"],
             "RespondType": "JSON",
-            "TimeStamp": time_stamp,
+            "TimeStamp": int(int_ts),
             "Version": neweb_pay_conf["Version"],
-            "MerchantOrderNo": f"{neweb_pay_conf['MerchantID']}_{payment_record.id}_{time_stamp}"[
-                :30
-            ],
+            "MerchantOrderNo": merchant_order_no,
             "Amt": order.amount,
             "ItemDesc": neweb_pay_conf["ItemDesc"],
             "NotifyURL": neweb_pay_conf["NotifyURL"],
@@ -239,7 +243,9 @@ class PaymentRecordViewSet(
             "Version": neweb_pay_conf["Version"],
         }
 
-        # Render payment page with context-data
+        # Render payment page/json with context-data based on content-type
+        if request.content_type == "application/json":
+            return Response(context, status=status.HTTP_201_CREATED)
         return render(request, "newebpay.html", context)
 
 
