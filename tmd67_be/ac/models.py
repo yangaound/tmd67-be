@@ -16,7 +16,7 @@ class TicketProduct(models.Model):
 
 class Order(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
-    state = FSMField(default="unpaid")
+    state = FSMField(default="draft")
     amount = models.IntegerField(default=0)
     created_time = models.DateTimeField(
         auto_now_add=True, null=True, blank=True
