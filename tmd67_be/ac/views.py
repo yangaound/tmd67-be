@@ -243,6 +243,10 @@ class PaymentRecordViewSet(
             "Version": neweb_pay_conf["Version"],
         }
 
+        # Transit order state to "unpaid"
+        order.state = "unpaid"
+        order.save()
+
         # Render payment page/json with context-data based on content-type
         if request.content_type == "application/json":
             return Response(context, status=status.HTTP_201_CREATED)
