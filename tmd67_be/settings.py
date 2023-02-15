@@ -131,10 +131,12 @@ MEDIA_URL = "media/"
 MEDIA_ROOT = "media"
 
 LOGIN_REDIRECT_URL = os.environ.get(
-    "LOGIN_REDIRECT_URL", "https://blue-beach-025f5e000-staging.eastasia.2.azurestaticapps.net"
+    "LOGIN_REDIRECT_URL",
+    "https://blue-beach-025f5e000-staging.eastasia.2.azurestaticapps.net",
 )
 LOGOUT_REDIRECT_URL = os.environ.get(
-    "LOGOUT_REDIRECT_URL", "https://blue-beach-025f5e000-staging.eastasia.2.azurestaticapps.net"
+    "LOGOUT_REDIRECT_URL",
+    "https://blue-beach-025f5e000-staging.eastasia.2.azurestaticapps.net",
 )
 
 # Default primary key field type
