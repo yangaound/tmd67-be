@@ -123,21 +123,26 @@ class PaymentRecordViewSet(
         transaction_data = json.loads(_transaction_msg)
 
         # Retrieve the Payment Record corresponding to the transaction
-        merchant_id, payment_record_id, _ = transaction_data["Result"][
-            "MerchantOrderNo"
-        ].split("_")
+        # NeWebPay’s parameter `MerchantOrderNo` consists of f"{merchant_id}_{payment_record_id}_{timestamp}"
         try:
+            merchant_id, payment_record_id, _ = transaction_data["Result"][
+                "MerchantOrderNo"
+            ].split("_")
             payment_record = PaymentRecord.objects.get(
-                id=payment_record_id, merchant_id=merchant_id
+                id=payment_record_id, merchant_id=data.get("MerchantID"), version=data.get("Version")
             )
         except PaymentRecord.DoesNotExist:
-            raise exceptions.ValidationError("PaymentRecord not found.")
+            raise exceptions.PermissionDenied
+
+        if payment_record.order.state == "paid":
+            return
 
         # Save the transaction result
         payment_record.status = transaction_data["Status"]
         payment_record.message = transaction_data["Message"]
         payment_record.result = json.dumps(transaction_data["Result"])
-        # write-off
+        # Write off
+        # transit the order.state to 'paid' only if status is 'SUCCESS'
         if payment_record.status == "SUCCESS":
             payment_record.order.state = "paid"
         payment_record.save()
@@ -149,24 +154,26 @@ class PaymentRecordViewSet(
     @staticmethod
     @api_view(["POST"])
     @transaction.atomic
-    def neweb_pay_notify(request, *args, **kwargs):
-        """Handle NewebPay's NotifyURL"""
-        data = PaymentRecordViewSet._write_off_trade(request, *args, **kwargs)
-        return Response(data)
+    def neweb_pay_notify(request):
+        """Handle NewebPay's NotifyURL for completing the payment process"""
+        PaymentRecordViewSet._write_off_trade(request)
+        return Response(None, 200)
 
     @staticmethod
     @api_view(["POST"])
     @transaction.atomic
-    def neweb_pay_return(request, *args, **kwargs):
-        """Handle NewebPay's ReturnURL"""
-        _ = PaymentRecordViewSet._write_off_trade(request, *args, **kwargs)
+    def neweb_pay_return(request):
+        """Handle NewebPay's ReturnURL for completing the payment process.
+        Redirect to home-page of the user'
+        """
+        PaymentRecordViewSet._write_off_trade(request)
         return HttpResponseRedirect(settings.LOGOUT_REDIRECT_URL + "/me")
 
     @transaction.atomic
     def create(self, request, *args, **kwargs):
         """
-        Create a payment record to record NewebPay’s trade information.
-        Return a webpage, from which connect to NewebPay's payment gateway.
+        Creates a payment record to document the NewebPay trade and updates the `order.state` to 'unpaid'.
+        Then, it responds with either HTML or JSON
         """
         neweb_pay_conf = settings.NEWEB_PAY
 
@@ -175,6 +182,8 @@ class PaymentRecordViewSet(
         description = self.request.data.get("description", "")
 
         # Validate the input order
+        # check if the order exists, its state is not equal to 'paid',
+        # and it belongs to the currently authenticated user.
         if not str(order_id).isdigit():
             raise exceptions.ValidationError(
                 {"order": ["Order format unexpected."]}
@@ -192,9 +201,13 @@ class PaymentRecordViewSet(
             raise exceptions.ValidationError({"order": [f"Order had paid."]})
 
         # Prepare transaction info
+        # reserve a `MerchantOrderNo`, which consists of the f"{merchant_id}_{payment_record_id}_{timestamp}" string
+        # truncated to 30 characters.
         payment_record = PaymentRecord(
             order=order,
             merchant_id=neweb_pay_conf["MerchantID"],
+            respond_type="JSON",
+            version=neweb_pay_conf["Version"],
             description=description,
             status=None,
         )
@@ -228,7 +241,7 @@ class PaymentRecordViewSet(
         )
         encrypted_data = encrypted_data.decode()
 
-        # Prepare context-data
+        # Prepare context dictionary
         _check_code = f"HashKey={neweb_pay_conf['HashKey']}&{encrypted_data}&HashIV={neweb_pay_conf['HashIV']}"
         hash_code = (
             hashlib.sha256(_check_code.encode("utf8")).hexdigest().upper()
@@ -243,14 +256,21 @@ class PaymentRecordViewSet(
             "Version": neweb_pay_conf["Version"],
         }
 
-        # Transit order state to "unpaid"
+        # Transit order state to 'unpaid'
+        # 'unpaid' means that the user has confirmed the purchased item,
+        # and the backend has reserved the MerchantOrderNo and is waiting for the payment to be credited.
         order.state = "unpaid"
         order.save()
 
-        # Render payment page/json with context-data based on content-type
+        # Render payment page/json with the context dictionary based on content-type
+        # the format of the response depends on the frontend implementation.
+        # if an HTML form with a submit button is used to call this API,
+        # the response is typically an HTML page. however,
+        # if a library is used to make the API call and the Content-Type header is set to application/json,
+        # the response is JSON data.
         if request.content_type == "application/json":
             return Response(context, status=status.HTTP_201_CREATED)
-        return render(request, "newebpay.html", context)
+        return render(request, "neweb_pay.html", context)
 
 
 def google_auth_rdr(req):
