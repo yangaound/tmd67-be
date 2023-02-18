@@ -24,7 +24,7 @@ jobs:
 
       - name: Create and start virtual environment
         run: |
-          apt-get update -y && apt-get install php -y
+          sudo apt-get update -y && sudo apt-get install php -y
           python -m venv venv
           source venv/bin/activate
       
