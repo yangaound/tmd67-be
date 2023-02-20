@@ -112,13 +112,13 @@ class PaymentRecordViewSet(
     @staticmethod
     def _write_off_trade(request):
         data = request.data
-        neweb_pay_conf = settings.NEWEB_PAY
+        conf = settings.NEWEB_PAY
 
         # Decrypt transaction info
         _transaction_msg = decrypt_trade_info(
             data["TradeInfo"],
-            neweb_pay_conf["HashKey"],
-            neweb_pay_conf["HashIV"],
+            conf["HashKey"],
+            conf["HashIV"],
         )
         transaction_data = json.loads(_transaction_msg)
 
@@ -129,7 +129,9 @@ class PaymentRecordViewSet(
                 "MerchantOrderNo"
             ].split("_")
             payment_record = PaymentRecord.objects.get(
-                id=payment_record_id, merchant_id=data.get("MerchantID"), version=data.get("Version")
+                id=payment_record_id,
+                merchant_id=data.get("MerchantID"),
+                version=data.get("Version"),
             )
         except PaymentRecord.DoesNotExist:
             raise exceptions.PermissionDenied
@@ -175,7 +177,7 @@ class PaymentRecordViewSet(
         Creates a payment record to document the NewebPay trade and updates the `order.state` to 'unpaid'.
         Then, it responds with either HTML or JSON
         """
-        neweb_pay_conf = settings.NEWEB_PAY
+        conf = settings.NEWEB_PAY
 
         # Extract input
         order_id = self.request.data.get("order")
@@ -205,30 +207,30 @@ class PaymentRecordViewSet(
         # truncated to 30 characters.
         payment_record = PaymentRecord(
             order=order,
-            merchant_id=neweb_pay_conf["MerchantID"],
+            merchant_id=conf["MerchantID"],
             respond_type="JSON",
-            version=neweb_pay_conf["Version"],
+            version=conf["Version"],
             description=description,
             status=None,
         )
         payment_record.save()
         int_ts = int(payment_record.created_time.timestamp())
         merchant_order_no = (
-            f"{neweb_pay_conf['MerchantID']}_{payment_record.id}_{int_ts}"[:30]
+            f"{conf['MerchantID']}_{payment_record.id}_{int_ts}"[:30]
         )
         payment_record.merchant_order_no = merchant_order_no
         payment_record.save()
 
         transaction_data = {
-            "MerchantID": neweb_pay_conf["MerchantID"],
+            "MerchantID": conf["MerchantID"],
             "RespondType": "JSON",
             "TimeStamp": int(int_ts),
-            "Version": neweb_pay_conf["Version"],
+            "Version": conf["Version"],
             "MerchantOrderNo": merchant_order_no,
             "Amt": order.amount,
-            "ItemDesc": neweb_pay_conf["ItemDesc"],
-            "NotifyURL": neweb_pay_conf["NotifyURL"],
-            "ReturnURL": neweb_pay_conf["ReturnURL"],
+            "ItemDesc": conf["ItemDesc"],
+            "NotifyURL": conf["NotifyURL"],
+            "ReturnURL": conf["ReturnURL"],
             "Email": request.user.username,
         }
 
@@ -236,24 +238,24 @@ class PaymentRecordViewSet(
         urlencode_translation_data = urllib.parse.urlencode(transaction_data)
         encrypted_data = encrypt_trade_info(
             urlencode_translation_data,
-            neweb_pay_conf["HashKey"],
-            neweb_pay_conf["HashIV"],
+            conf["HashKey"],
+            conf["HashIV"],
         )
         encrypted_data = encrypted_data.decode()
 
         # Prepare context dictionary
-        _check_code = f"HashKey={neweb_pay_conf['HashKey']}&{encrypted_data}&HashIV={neweb_pay_conf['HashIV']}"
+        _check_code = f"HashKey={conf['HashKey']}&{encrypted_data}&HashIV={conf['HashIV']}"
         hash_code = (
             hashlib.sha256(_check_code.encode("utf8")).hexdigest().upper()
         )
         context = {
-            "MPG_GW": neweb_pay_conf["MPG_GW"],
-            "HashKey": neweb_pay_conf["HashKey"],
-            "MerchantID": neweb_pay_conf["MerchantID"],
+            "MPG_GW": conf["MPG_GW"],
+            "HashKey": conf["HashKey"],
+            "MerchantID": conf["MerchantID"],
             "TradeInfo": encrypted_data,
             "TradeSha": hash_code,
             "Amount": order.amount,
-            "Version": neweb_pay_conf["Version"],
+            "Version": conf["Version"],
         }
 
         # Transit order state to 'unpaid'
@@ -291,21 +293,21 @@ def google_auth_rdr(req):
 
 
 @transaction.atomic
-def google_auth_cb(req):
+def google_auth_cb(request):
     conf = settings.OAUTH2["Google"]
 
-    if req.GET.get("code"):
+    if request.GET.get("code"):
         try:
             oauth = OAuth2Session(
                 conf["client_id"], redirect_uri=conf["redirect_uri"]
             )
             idp_resp = oauth.fetch_token(
                 conf["token_uri"],
-                code=req.GET.get("code"),
+                code=request.GET.get("code"),
                 client_secret=conf["client_secret"],
             )
             id_token = idp_resp["id_token"]
-            state = req.GET.get("state")
+            state = request.GET.get("state")
             open_info = jwt.decode(
                 id_token, options={"verify_signature": False}
             )
@@ -320,12 +322,14 @@ def google_auth_cb(req):
                 )
                 user.save()
             login(
-                req, user, backend="django.contrib.auth.backends.ModelBackend"
+                request,
+                user,
+                backend="django.contrib.auth.backends.ModelBackend",
             )
             resp = HttpResponseRedirect(state)
         except Exception as e:
             resp = JsonResponse({"error": str(e)}, status=500)
     else:
-        resp = JsonResponse({"error": req.GET.get("error", None)}, 400)
+        resp = JsonResponse({"error": request.GET.get("error", None)}, 400)
 
     return resp
