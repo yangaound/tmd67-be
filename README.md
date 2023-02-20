@@ -11,22 +11,22 @@ Docker
 - base-url: https://testtmd67api.azurewebsites.net/
 - spec: https://www.notion.so/c2caef7031e34d02873b4a40f9d47108
 
-## 環境變數
-| 名稱 | 值（模擬）                            | 模組       | 註 |
-| --- |--------------------------------|----------| --- |
-| LOGOUT_REDIRECT_URL | https://ac.toastmasters.org.tw | Identity | 首頁，支付後追加/me |
-| LOGIN_REDIRECT_URL | https://ac.toastmasters.org.tw/me | Identity | 登入後的頁面 |
-| MerchantID | MS12345678                     | Payment  | 藍新 |
-| HashKey | AAAvw3YlqoEk6G4HqRKDAYpHKZWxBBB | Payment  | 藍新 |
-| HashIV | AAAC1FplieBBB                  | Payment  | 藍新 |
-| Version | 2.0                            | Payment  | 藍新 |
-| MPG_GW | https://ccore.newebpay.com/MPG/mpg_gateway | Payment  | 藍新 |
-| ItemDesc | 2023 Annual Conference Ticket  | Payment  | 藍新 |
-| RETURN_URL | http://gw.tmd67.com/newebpay-return/ | Payment  | 藍新 |
-| NOTIFY_URL | http://gw.tmd67.com/newebpay-return/ | Payment  | 藍新 |
-| GG_CLIENT_ID | fmoirt.apps.googleusercontent.com | Google   | Google |
-| GG_CLIENT_SECRET | U18cIQr0Nb5EEE                 | Google   | Google |
-| GG_REDIRECT_URI | https://api.tmd67.com/google/callback/ | Google   | Google |
+## Env Variables
+| Name                | Value                          | Module   | Remarks    |
+|---------------------|--------------------------------|----------|------------|
+| LOGOUT_REDIRECT_URL | https://ac.toastmasters.org.tw | Identity | 支付後追加`/me` |
+| LOGIN_REDIRECT_URL  | https://ac.toastmasters.org.tw/me | Identity | 登入後的頁面     |
+| MerchantID          | MS12345678                     | Payment  | 藍新         |
+| HashKey             | AAAvw3YlqoEk6G4HqRKDAYpHKZWxBBB | Payment  | 藍新         |
+| HashIV              | AAAC1FplieBBB                  | Payment  | 藍新         |
+| Version             | 2.0                            | Payment  | 藍新         |
+| MPG_GW              | https://ccore.newebpay.com/MPG/mpg_gateway | Payment  | 藍新         |
+| ItemDesc            | 2023 Annual Conference Ticket  | Payment  | 藍新         |
+| RETURN_URL          | http://gw.tmd67.com/newebpay-return/ | Payment  | 藍新         |
+| NOTIFY_URL          | http://gw.tmd67.com/newebpay-return/ | Payment  | 藍新         |
+| GG_CLIENT_ID        | fmoirt.apps.googleusercontent.com | IdBroker | Google     |
+| GG_CLIENT_SECRET    | U18cIQr0Nb5EEE                 | IdBroker | Google     |
+| GG_REDIRECT_URI     | https://api.tmd67.com/google/callback/ | IdBroker | Google     |
 
 ## Run pruduction server
 Download `data.json` from `tmd67-data` repo and put it in this folder and run:
