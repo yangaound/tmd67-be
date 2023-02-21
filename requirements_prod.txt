@@ -1,3 +1,4 @@
+Django==4.1.2
 djangorestframework
 django_filter
 django-fsm

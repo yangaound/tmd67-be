@@ -69,6 +69,11 @@ class OrderSerializer(serializers.ModelSerializer):
         ]
 
     def to_internal_value(self, data):
+        data.pop("id", None)
+        data.pop("state", None)
+        data.pop("amount", None)
+        data.pop("created_time", None)
+        data.pop("updated_time", None)
         data["user"] = self.context["request"].user
 
         if data["product_items"] is None:
