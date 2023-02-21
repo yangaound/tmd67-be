@@ -16,19 +16,22 @@ class ReprMixin:
         }
 
 
-class CreateIdentitySerializer(ReprMixin, serializers.Serializer):
+class IdentitySerializer(serializers.Serializer):
     email = serializers.EmailField(help_text="*required")
     password = serializers.CharField(
         max_length=50, min_length=6, help_text="*required"
     )
-    first_name = serializers.CharField(required=False, allow_null=True)
-    last_name = serializers.CharField(required=False, allow_null=True)
 
     def update(self, instance, validated_data):
         pass
 
     def create(self, validated_data):
         pass
+
+
+class CreateIdentitySerializer(ReprMixin, IdentitySerializer):
+    first_name = serializers.CharField(required=False, allow_null=True)
+    last_name = serializers.CharField(required=False, allow_null=True)
 
 
 class RetrieveIdentitySerializer(ReprMixin, serializers.Serializer):
