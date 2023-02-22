@@ -18,6 +18,7 @@ from .models import Order, PaymentRecord, Ticket, TicketProduct
 from .neweb_pay_crypto import decrypt_trade_info, encrypt_trade_info
 from .serializers import (
     CreateIdentitySerializer,
+    IdentitySerializer,
     OrderSerializer,
     PaymentRecordSerializer,
     RetrieveIdentitySerializer,
@@ -54,6 +55,39 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class ACIDLogin(viewsets.GenericViewSet, mixins.CreateModelMixin):
+    serializer_class = IdentitySerializer
+    queryset = User.objects.all()
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+
+        if not (
+            None
+            is not request.META.get("HTTP_X_CSRFTOKEN")
+            == request.COOKIES.get("csrftoken")
+        ):
+            raise exceptions.AuthenticationFailed
+
+        qs = self.get_queryset().filter(username=validated_data["email"])
+        if not qs.exists():
+            raise exceptions.AuthenticationFailed
+
+        user = qs.first()
+        if not user.check_password(validated_data["password"]):
+            raise exceptions.AuthenticationFailed
+
+        login(
+            request,
+            user,
+            backend="django.contrib.auth.backends.ModelBackend",
+        )
+        return Response(None, status=status.HTTP_200_OK)
 
 
 class ACIDDirectory(viewsets.GenericViewSet, mixins.ListModelMixin):
@@ -214,9 +248,9 @@ class PaymentRecordViewSet(
             status=None,
         )
         payment_record.save()
-        int_ts = int(payment_record.created_time.timestamp())
+        reversed_ts = str(int(payment_record.created_time.timestamp()))[::-1]
         merchant_order_no = (
-            f"{conf['MerchantID']}_{payment_record.id}_{int_ts}"[:30]
+            f"{conf['MerchantID']}_{payment_record.id}_{reversed_ts}"[:30]
         )
         payment_record.merchant_order_no = merchant_order_no
         payment_record.save()
@@ -224,7 +258,7 @@ class PaymentRecordViewSet(
         transaction_data = {
             "MerchantID": conf["MerchantID"],
             "RespondType": "JSON",
-            "TimeStamp": int(int_ts),
+            "TimeStamp": reversed_ts,
             "Version": conf["Version"],
             "MerchantOrderNo": merchant_order_no,
             "Amt": order.amount,
@@ -250,7 +284,6 @@ class PaymentRecordViewSet(
         )
         context = {
             "MPG_GW": conf["MPG_GW"],
-            "HashKey": conf["HashKey"],
             "MerchantID": conf["MerchantID"],
             "TradeInfo": encrypted_data,
             "TradeSha": hash_code,
