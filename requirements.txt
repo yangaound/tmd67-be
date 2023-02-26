@@ -8,6 +8,7 @@ black==22.12.0
   pathspec==0.10.3
   platformdirs==2.6.2
   tomli==2.0.1
+django-cors-headers
 django-filter==22.1
 django-fsm==2.8.1
 djangorestframework==3.14.0

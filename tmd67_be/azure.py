@@ -9,8 +9,14 @@ ALLOWED_HOSTS = (
 )
 
 CSRF_TRUSTED_ORIGINS = (
-    ["https://" + os.environ["WEBSITE_HOSTNAME"]]
-    if "WEBSITE_HOSTNAME" in os.environ
+    os.environ["ALLOWED_ORIGINS"].split(",")
+    if "ALLOWED_ORIGINS" in os.environ
+    else []
+)
+
+CORS_ALLOWED_ORIGINS = (
+    os.environ["ALLOWED_ORIGINS"].split(",")
+    if "ALLOWED_ORIGINS" in os.environ
     else []
 )
 
@@ -37,6 +43,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
