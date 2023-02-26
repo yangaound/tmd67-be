@@ -8,17 +8,15 @@ ALLOWED_HOSTS = (
     else []
 )
 
-CSRF_TRUSTED_ORIGINS = (
-    os.environ["ALLOWED_ORIGINS"].split(",")
-    if "ALLOWED_ORIGINS" in os.environ
-    else []
-)
-
-CORS_ALLOWED_ORIGINS = (
-    os.environ["ALLOWED_ORIGINS"].split(",")
-    if "ALLOWED_ORIGINS" in os.environ
-    else []
-)
+if "ALLOWED_ORIGINS" in os.environ:
+    if os.environ["ALLOWED_ORIGINS"] == "*":
+        CORS_ALLOW_ALL_ORIGINS = True
+    else:
+        CSRF_TRUSTED_ORIGINS = os.environ["ALLOWED_ORIGINS"].split(",")
+        CORS_ALLOWED_ORIGINS = os.environ["ALLOWED_ORIGINS"].split(",")
+else:
+    CSRF_TRUSTED_ORIGINS = []
+    CORS_ALLOWED_ORIGINS = []
 
 hostname = os.environ["DBHOST"]
 DATABASES = {
