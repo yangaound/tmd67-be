@@ -33,7 +33,7 @@ DATABASES = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    # Enables whitenoise for serving static files
+    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -41,7 +41,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
 ]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
