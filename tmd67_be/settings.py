@@ -27,7 +27,12 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+    "gw.tmd67.com",
+    "api.tmd67.com",
+]
 
 
 # Application definition
@@ -48,6 +53,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -200,3 +207,13 @@ NEWEB_PAY = {
         "https://testtmd67api.azurewebsites.net/payment-records/neweb-pay-return/",
     ),
 }
+
+CORS_ORIGIN_WHITELIST = [
+    "http://gw.tmd67.com",
+    "http://localhost:8088",  # for Vue.js npm run dev
+]
+CSRF_TRUSTED_ORIGINS = [
+    "http://gw.tmd67.com",
+    "http://localhost:8088",  # for Vue.js npm run dev
+]
+CORS_ALLOW_CREDENTIALS = True
