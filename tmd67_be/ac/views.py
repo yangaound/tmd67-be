@@ -8,6 +8,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http.response import HttpResponseRedirect, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import render
 from requests_oauthlib import OAuth2Session
 from rest_framework import exceptions, mixins, permissions, status, viewsets
@@ -57,6 +58,17 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
         )
 
 
+class CSRFToken(viewsets.GenericViewSet, mixins.ListModelMixin):
+    serializer_class = IdentitySerializer
+    queryset = User.objects.all()
+
+    def list(self, request):
+        csrftoken = get_token(request)
+        res = Response(None)
+        res.set_cookie("csrftoken", csrftoken, expires=30)
+        return res
+
+
 class ACIDLogin(viewsets.GenericViewSet, mixins.CreateModelMixin):
     serializer_class = IdentitySerializer
     queryset = User.objects.all()
@@ -66,9 +78,6 @@ class ACIDLogin(viewsets.GenericViewSet, mixins.CreateModelMixin):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
-
-        if not request.META.get("HTTP_X_CSRFTOKEN"):
-            raise exceptions.AuthenticationFailed
 
         qs = self.get_queryset().filter(username=validated_data["email"])
         if not qs.exists():

@@ -27,12 +27,7 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "gw.tmd67.com",
-    "api.tmd67.com",
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -138,6 +133,7 @@ STATIC_ROOT = "static"
 MEDIA_URL = "media/"
 MEDIA_ROOT = "media"
 
+FORCE_SCRIPT_NAME = os.environ.get("FORCE_SCRIPT_NAME")
 LOGIN_REDIRECT_URL = os.environ.get(
     "LOGIN_REDIRECT_URL",
     "https://blue-beach-025f5e000-staging.eastasia.2.azurestaticapps.net",
@@ -164,9 +160,6 @@ STRAWBERRY_DJANGO = {
     "FIELD_DESCRIPTION_FROM_HELP_TEXT": True,
     "TYPE_DESCRIPTION_FROM_MODEL_DOCSTRING": True,
 }
-
-if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
-    from .azure import *  # disable --remove-all-unused-imports
 
 
 OAUTH2 = {
@@ -208,12 +201,11 @@ NEWEB_PAY = {
     ),
 }
 
-CORS_ORIGIN_WHITELIST = [
-    "http://gw.tmd67.com",
-    "http://localhost:8088",  # for Vue.js npm run dev
-]
-CSRF_TRUSTED_ORIGINS = [
-    "http://gw.tmd67.com",
-    "http://localhost:8088",  # for Vue.js npm run dev
-]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ["https://*.azurewebsites.net"]
+CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS
+
+
+if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
+    from .azure import *  # disable --remove-all-unused-imports
