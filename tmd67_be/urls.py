@@ -32,6 +32,7 @@ router.register(
 router.register(
     r"user-directory", ac_views.ACIDDirectory, basename="user-directory"
 )
+router.register(r"csrf-token", ac_views.CSRFToken, basename="csrf-token")
 router.register(r"user-login", ac_views.ACIDLogin, basename="user-login")
 router.register(r"ticket-products", ac_views.TicketProductViewSet)
 router.register(r"orders", ac_views.OrderViewSet)

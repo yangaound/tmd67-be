@@ -8,6 +8,7 @@ from django.contrib.auth import login
 from django.contrib.auth.models import User
 from django.db import transaction
 from django.http.response import HttpResponseRedirect, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import render
 from requests_oauthlib import OAuth2Session
 from rest_framework import exceptions, mixins, permissions, status, viewsets
@@ -55,6 +56,14 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
         return Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class CSRFToken(viewsets.GenericViewSet, mixins.ListModelMixin):
+    serializer_class = IdentitySerializer
+    queryset = User.objects.all()
+
+    def list(self, request):
+        return Response(None)
 
 
 class ACIDLogin(viewsets.GenericViewSet, mixins.CreateModelMixin):
