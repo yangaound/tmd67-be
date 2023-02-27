@@ -67,11 +67,7 @@ class ACIDLogin(viewsets.GenericViewSet, mixins.CreateModelMixin):
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
 
-        if not (
-            None
-            is not request.META.get("HTTP_X_CSRFTOKEN")
-            == request.COOKIES.get("csrftoken")
-        ):
+        if not request.META.get("HTTP_X_CSRFTOKEN"):
             raise exceptions.AuthenticationFailed
 
         qs = self.get_queryset().filter(username=validated_data["email"])
