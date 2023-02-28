@@ -16,7 +16,6 @@ Docker
 |---------------------|--------------------------------|----------|------------|
 | LOGOUT_REDIRECT_URL | https://ac.toastmasters.org.tw | Identity | 支付後追加`/me` |
 | LOGIN_REDIRECT_URL  | https://ac.toastmasters.org.tw/me | Identity | 登入後的頁面     |
-| ALLOWED_HOSTS       | api.tmd67.com,localhost        | Identity |      |
 | ALLOWED_ORIGINS     | https://api.tmd67.com,http://localhost:8088 | Identity |      |
 | MerchantID          | MS12345678                     | Payment  | 藍新         |
 | HashKey             | AAAvw3YlqoEk6G4HqRKDAYpHKZWxBBB | Payment  | 藍新         |

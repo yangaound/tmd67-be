@@ -138,6 +138,7 @@ STATIC_ROOT = "static"
 MEDIA_URL = "media/"
 MEDIA_ROOT = "media"
 
+FORCE_SCRIPT_NAME = os.environ.get("FORCE_SCRIPT_NAME")
 LOGIN_REDIRECT_URL = os.environ.get(
     "LOGIN_REDIRECT_URL",
     "https://blue-beach-025f5e000-staging.eastasia.2.azurestaticapps.net",
@@ -209,11 +210,12 @@ NEWEB_PAY = {
 }
 
 CORS_ORIGIN_WHITELIST = [
-    "http://gw.tmd67.com",
-    "http://localhost:8088",  # for Vue.js npm run dev
+    "https://gw.tmd67.com",
+    "https://localhost:8443",  # for Vue.js npm run dev
 ]
 CSRF_TRUSTED_ORIGINS = [
-    "http://gw.tmd67.com",
-    "http://localhost:8088",  # for Vue.js npm run dev
+    "https://gw.tmd67.com",
+    "https://localhost:8443",  # for Vue.js npm run dev
 ]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_ALLOW_ALL = True
