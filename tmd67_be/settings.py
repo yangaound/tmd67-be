@@ -48,9 +48,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -201,10 +201,24 @@ NEWEB_PAY = {
     ),
 }
 
+
 CORS_ALLOW_CREDENTIALS = True
-CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ["https://*.azurewebsites.net"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://gw.azurewebsites.net",
+    "https://api.azurewebsites.net",
+]
 CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS
+
+SESSION_COOKIE_SAMESITE = "None"
+SESSION_COOKIE_NAME = "sessionid"
+SESSION_COOKIE_AGE = 60 * 15
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+
+CSRF_COOKIE_SAMESITE = "None"
+CSRF_COOKIE_NAME = "csrftoken"
+CSRF_COOKIE_AGE = 60 * 16
+CSRF_COOKIE_SECURE = True
 
 
 if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure

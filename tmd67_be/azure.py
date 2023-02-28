@@ -13,7 +13,6 @@ if "ALLOWED_ORIGINS" in os.environ:
     CSRF_TRUSTED_ORIGINS = os.environ["ALLOWED_ORIGINS"].split(",")
     CORS_ORIGIN_WHITELIST = os.environ["ALLOWED_ORIGINS"].split(",")
     CORS_ALLOW_CREDENTIALS = True
-    CORS_ORIGIN_ALLOW_ALL = True
 else:
     CSRF_TRUSTED_ORIGINS = []
     CORS_ORIGIN_WHITELIST = []
@@ -36,15 +35,16 @@ DATABASES = {
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 SECRET_KEY = os.getenv("SECRET_KEY")
