@@ -27,12 +27,7 @@ SECRET_KEY = (
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [
-    "localhost",
-    "127.0.0.1",
-    "gw.tmd67.com",
-    "api.tmd67.com",
-]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -166,9 +161,6 @@ STRAWBERRY_DJANGO = {
     "TYPE_DESCRIPTION_FROM_MODEL_DOCSTRING": True,
 }
 
-if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
-    from .azure import *  # disable --remove-all-unused-imports
-
 
 OAUTH2 = {
     "Google": {
@@ -209,13 +201,11 @@ NEWEB_PAY = {
     ),
 }
 
-CORS_ORIGIN_WHITELIST = [
-    "https://gw.tmd67.com",
-    "https://localhost:8443",  # for Vue.js npm run dev
-]
-CSRF_TRUSTED_ORIGINS = [
-    "https://gw.tmd67.com",
-    "https://localhost:8443",  # for Vue.js npm run dev
-]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ["https://*.azurewebsites.net"]
+CORS_ORIGIN_WHITELIST = CSRF_TRUSTED_ORIGINS
+
+
+if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
+    from .azure import *  # disable --remove-all-unused-imports
