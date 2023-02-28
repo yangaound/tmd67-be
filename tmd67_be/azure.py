@@ -3,23 +3,23 @@ import os
 from .settings import *
 
 ALLOWED_HOSTS = (
-    os.environ["ALLOWED_HOSTS"].split(",")
-    if "ALLOWED_HOSTS" in os.environ
+    [os.environ["WEBSITE_HOSTNAME"]]
+    if "WEBSITE_HOSTNAME" in os.environ
     else []
-) + [os.environ.get("WEBSITE_HOSTNAME", "localhost")]
+) + ["localhost"]
 
 
 if "ALLOWED_ORIGINS" in os.environ:
-    if os.environ["ALLOWED_ORIGINS"] == "*":
-        CORS_ALLOW_ALL_ORIGINS = True
-    else:
-        CSRF_TRUSTED_ORIGINS = os.environ["ALLOWED_ORIGINS"].split(",")
-        CORS_ORIGIN_WHITELIST = os.environ["ALLOWED_ORIGINS"].split(",")
+    CSRF_TRUSTED_ORIGINS = os.environ["ALLOWED_ORIGINS"].split(",")
+    CORS_ORIGIN_WHITELIST = os.environ["ALLOWED_ORIGINS"].split(",")
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ORIGIN_ALLOW_ALL = True
 else:
     CSRF_TRUSTED_ORIGINS = []
     CORS_ORIGIN_WHITELIST = []
+    CORS_ALLOW_CREDENTIALS = False
+    CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ALLOW_CREDENTIALS = True
 
 hostname = os.environ["DBHOST"]
 DATABASES = {
