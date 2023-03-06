@@ -204,6 +204,8 @@ NEWEB_PAY = {
 
 CORS_ALLOW_CREDENTIALS = True
 CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000",
+    "http://localhost:8080",
     "https://gw.azurewebsites.net",
     "https://api.azurewebsites.net",
 ]
@@ -216,8 +218,8 @@ SESSION_COOKIE_HTTPONLY = True
 
 CSRF_COOKIE_SAMESITE = "None"
 CSRF_COOKIE_NAME = "csrftoken"
-CSRF_COOKIE_AGE = 60 * 16
 CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_HTTPONLY = False
 
 
 if "WEBSITE_HOSTNAME" in os.environ:  # Running on Azure
