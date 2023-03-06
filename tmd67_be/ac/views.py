@@ -1,13 +1,20 @@
 import hashlib
 import json
+import logging
 import urllib.parse
 
 import jwt
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.models import User
+from django.core.exceptions import PermissionDenied
 from django.db import transaction
-from django.http.response import HttpResponseRedirect, JsonResponse
+from django.http import QueryDict
+from django.http.response import (
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+)
 from django.middleware.csrf import get_token
 from django.shortcuts import render
 from requests_oauthlib import OAuth2Session
@@ -58,41 +65,50 @@ class ACIDRegister(viewsets.GenericViewSet, mixins.CreateModelMixin):
         )
 
 
-class CSRFToken(viewsets.GenericViewSet, mixins.ListModelMixin):
-    serializer_class = IdentitySerializer
-    queryset = User.objects.all()
-
-    def list(self, request):
-        csrftoken = get_token(request)
-        res = Response(None)
-        res.set_cookie("csrftoken", csrftoken, expires=30)
-        return res
+def csrf_token(request):
+    csrftoken = get_token(request)
+    res = JsonResponse({settings.CSRF_COOKIE_NAME: csrftoken})
+    res.set_cookie(settings.CSRF_COOKIE_NAME, csrftoken)
+    return res
 
 
-class ACIDLogin(viewsets.GenericViewSet, mixins.CreateModelMixin):
-    serializer_class = IdentitySerializer
-    queryset = User.objects.all()
-
-    @transaction.atomic
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+@transaction.atomic
+def user_login(request):
+    try:
+        if request.content_type == "application/json":
+            serializer = IdentitySerializer(data=json.load(request))
+        else:
+            serializer = IdentitySerializer(
+                data=QueryDict(request.POST.urlencode())
+            )
         serializer.is_valid(raise_exception=True)
         validated_data = serializer.validated_data
+    except Exception as e:
+        logging.warning(str(e))
+        raise PermissionDenied
 
-        qs = self.get_queryset().filter(username=validated_data["email"])
-        if not qs.exists():
-            raise exceptions.AuthenticationFailed
-
-        user = qs.first()
-        if not user.check_password(validated_data["password"]):
-            raise exceptions.AuthenticationFailed
-
-        login(
-            request,
-            user,
-            backend="django.contrib.auth.backends.ModelBackend",
+    qs = User.objects.filter(username=validated_data["email"])
+    if not qs.exists():
+        logging.warning(
+            "The email '{email}' does not exist.".format(**validated_data)
         )
-        return Response(None, status=status.HTTP_200_OK)
+        raise PermissionDenied
+
+    user = qs.first()
+    if not user.check_password(validated_data["password"]):
+        logging.warning(
+            "Incorrect password entered for user '{email}'.".format(
+                **validated_data
+            )
+        )
+        raise PermissionDenied
+
+    login(
+        request,
+        user,
+        backend="django.contrib.auth.backends.ModelBackend",
+    )
+    return HttpResponse()
 
 
 class ACIDDirectory(viewsets.GenericViewSet, mixins.ListModelMixin):
